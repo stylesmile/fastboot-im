@@ -6,18 +6,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.bx.imclient.annotation.IMListener;
 import com.bx.imcommon.enums.IMListenerType;
 import com.bx.imcommon.model.IMSendResult;
+import io.github.stylesmile.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
-@Component
+@Service
 public class MessageListenerMulticaster {
 
-    @Autowired(required = false)
     private List<MessageListener>  messageListeners  = Collections.emptyList();
 
     public  void multicast(IMListenerType listenerType, List<IMSendResult> results){

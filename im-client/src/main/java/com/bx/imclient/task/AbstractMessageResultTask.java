@@ -3,17 +3,17 @@ package com.bx.imclient.task;
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 
 @Slf4j
-public abstract class AbstractMessageResultTask implements CommandLineRunner {
+public abstract class AbstractMessageResultTask  {
 
     private static final ExecutorService EXECUTOR_SERVICE = ThreadPoolExecutorFactory.getThreadPoolExecutor();
 
-    @Override
+    @PostConstruct
     public void run(String... args) {
         // 初始化定时器
         EXECUTOR_SERVICE.execute(new Runnable() {
