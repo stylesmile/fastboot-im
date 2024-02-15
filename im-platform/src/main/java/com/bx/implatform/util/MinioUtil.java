@@ -1,11 +1,11 @@
 package com.bx.implatform.util;
 
+import io.github.stylesmile.file.UploadedFile;
 import io.minio.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -76,8 +76,8 @@ public class MinioUtil {
      * @param file       文件
      * @return Boolean
      */
-    public String upload(String bucketName, String path, MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
+    public String upload(String bucketName, String path, UploadedFile file) {
+        String originalFilename = file.getName();
         if (StringUtils.isBlank(originalFilename)) {
             throw new RuntimeException();
         }
@@ -88,7 +88,7 @@ public class MinioUtil {
         String objectName = DateTimeUtils.getFormatDate(new Date(), DateTimeUtils.PARTDATEFORMAT) + "/" + fileName;
         try {
             PutObjectArgs objectArgs = PutObjectArgs.builder().bucket(bucketName).object(path + "/" + objectName)
-                    .stream(file.getInputStream(), file.getSize(), -1).contentType(file.getContentType()).build();
+                    .stream(file.getContent(), file.getContentSize(), -1).contentType(file.getContentType()).build();
             //文件名称相同会覆盖
             minioClient.putObject(objectArgs);
         } catch (Exception e) {

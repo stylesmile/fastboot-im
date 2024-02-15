@@ -30,7 +30,6 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -70,7 +69,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @CacheEvict(value = "#vo.getId()")
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     @Override
     public GroupVO modifyGroup(GroupVO vo) {
         UserSession session = SessionContext.getSession();
@@ -93,7 +92,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         return vo;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "#groupId")
     @Override
     public void deleteGroup(Long groupId) {

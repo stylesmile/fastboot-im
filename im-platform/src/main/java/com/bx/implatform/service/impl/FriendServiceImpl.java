@@ -22,7 +22,6 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     @Override
     public void addFriend(Long friendId) {
         long userId = SessionContext.getSession().getUserId();
@@ -57,7 +56,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delFriend(Long friendId) {
         long userId = SessionContext.getSession().getUserId();

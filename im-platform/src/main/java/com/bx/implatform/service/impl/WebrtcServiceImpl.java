@@ -13,24 +13,24 @@ import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.session.WebrtcSession;
 import com.bx.implatform.vo.PrivateMessageVO;
-import lombok.RequiredArgsConstructor;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class WebrtcServiceImpl implements IWebrtcService {
 
-    private final IMClient imClient;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final ICEServerConfig iceServerConfig;
+    @AutoWired
+    private IMClient imClient;
+    @AutoWired
+    private JedisTemplate jedisTemplate;
+    @AutoWired
+    private ICEServerConfig iceServerConfig;
 
     @Override
     public void call(Long uid, String offer) {
@@ -43,7 +43,9 @@ public class WebrtcServiceImpl implements IWebrtcService {
         webrtcSession.setCallerId(session.getUserId());
         webrtcSession.setCallerTerminal(session.getTerminal());
         String key = getSessionKey(session.getUserId(), uid);
-        redisTemplate.opsForValue().set(key, webrtcSession, 12, TimeUnit.HOURS);
+//        redisTemplate.opsForValue().set(key, webrtcSession, 12, TimeUnit.HOURS);
+        // 12小时
+        jedisTemplate.setSerializeDataEx(key, webrtcSession, 43200);
         // 向对方所有终端发起呼叫
         PrivateMessageVO messageInfo = new PrivateMessageVO();
         messageInfo.setType(MessageType.RTC_CALL.code());
@@ -62,7 +64,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
     }
 
     @Override
-    public void accept(Long uid, @RequestBody String answer) {
+    public void accept(Long uid, String answer) {
         UserSession session = SessionContext.getSession();
         // 查询webrtc会话
         WebrtcSession webrtcSession = getWebrtcSession(session.getUserId(), uid);
@@ -70,7 +72,8 @@ public class WebrtcServiceImpl implements IWebrtcService {
         webrtcSession.setAcceptorId(session.getUserId());
         webrtcSession.setAcceptorTerminal(session.getTerminal());
         String key = getSessionKey(session.getUserId(), uid);
-        redisTemplate.opsForValue().set(key, webrtcSession, 12, TimeUnit.HOURS);
+//        redisTemplate.opsForValue().set(key, webrtcSession, 12, TimeUnit.HOURS);
+        jedisTemplate.setSerializeDataEx(key, webrtcSession, 43200);
         // 向发起人推送接受通话信令
         PrivateMessageVO messageInfo = new PrivateMessageVO();
         messageInfo.setType(MessageType.RTC_ACCEPT.code());
@@ -215,7 +218,8 @@ public class WebrtcServiceImpl implements IWebrtcService {
 
     private WebrtcSession getWebrtcSession(Long userId, Long uid) {
         String key = getSessionKey(userId, uid);
-        WebrtcSession webrtcSession = (WebrtcSession) redisTemplate.opsForValue().get(key);
+//        WebrtcSession webrtcSession = (WebrtcSession) redisTemplate.opsForValue().get(key);
+        WebrtcSession webrtcSession = jedisTemplate.getSerializeData(key, WebrtcServiceImpl.class);
         if (webrtcSession == null) {
             throw new GlobalException("视频通话已结束");
         }
@@ -224,7 +228,8 @@ public class WebrtcServiceImpl implements IWebrtcService {
 
     private void removeWebrtcSession(Long userId, Long uid) {
         String key = getSessionKey(userId, uid);
-        redisTemplate.delete(key);
+//        redisTemplate.delete(key);
+        jedisTemplate.delete(key);
     }
 
     private String getSessionKey(Long id1, Long id2) {

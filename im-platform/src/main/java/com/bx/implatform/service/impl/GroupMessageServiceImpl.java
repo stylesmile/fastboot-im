@@ -31,11 +31,12 @@ import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.util.SensitiveFilterUtil;
 import com.bx.implatform.vo.GroupMessageVO;
 import com.google.common.base.Splitter;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -45,11 +46,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, GroupMessage> implements IGroupMessageService {
-    private final IGroupService groupService;
-    private final IGroupMemberService groupMemberService;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final IMClient imClient;
-    private final SensitiveFilterUtil sensitiveFilterUtil;
+    @AutoWired
+    private IGroupService groupService;
+    @AutoWired
+    private IGroupMemberService groupMemberService;
+    @AutoWired
+    private JedisTemplate jedisTemplate;
+    @AutoWired
+    private IMClient imClient;
+    @AutoWired
+    private SensitiveFilterUtil sensitiveFilterUtil;
 
     @Override
     public Long sendMessage(GroupMessageDTO dto) {
@@ -162,24 +168,29 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         List<GroupMessage> messages = this.list(wrapper);
         // 转成vo
         List<GroupMessageVO> vos = messages.stream()
-            .filter(m -> {
-                //排除加群之前的消息
-                GroupMember member = groupMemberMap.get(m.getGroupId());
-                return Objects.nonNull(member) && DateUtil.compare(member.getCreatedTime(), m.getSendTime()) <= 0;
-            })
-            .map(m -> {
-                GroupMessageVO vo = BeanUtils.copyProperties(m, GroupMessageVO.class);
-                // 被@用户列表
-                if (StringUtils.isNotBlank(m.getAtUserIds()) && Objects.nonNull(vo)) {
-                    List<String> atIds = Splitter.on(",").trimResults().splitToList(m.getAtUserIds());
-                    vo.setAtUserIds(atIds.stream().map(Long::parseLong).collect(Collectors.toList()));
-                }
-                return vo;
-            }).collect(Collectors.toList());
+                .filter(m -> {
+                    //排除加群之前的消息
+                    GroupMember member = groupMemberMap.get(m.getGroupId());
+                    return Objects.nonNull(member) && DateUtil.compare(member.getCreatedTime(), m.getSendTime()) <= 0;
+                })
+                .map(m -> {
+                    GroupMessageVO vo = BeanUtils.copyProperties(m, GroupMessageVO.class);
+                    // 被@用户列表
+                    if (StringUtils.isNotBlank(m.getAtUserIds()) && Objects.nonNull(vo)) {
+                        List<String> atIds = Splitter.on(",").trimResults().splitToList(m.getAtUserIds());
+                        vo.setAtUserIds(atIds.stream().map(Long::parseLong).collect(Collectors.toList()));
+                    }
+                    return vo;
+                }).collect(Collectors.toList());
         // 消息状态,数据库没有存群聊的消息状态，需要从redis取
         List<String> keys = ids.stream().map(id -> String.join(":", RedisKey.IM_GROUP_READED_POSITION, id.toString(), session.getUserId().toString()))
                 .collect(Collectors.toList());
-        List<Object> sendPos = redisTemplate.opsForValue().multiGet(keys);
+        List<Object> sendPos = new ArrayList<>();
+        for (String key : keys) {
+            Object o = jedisTemplate.getSerializeData(key, Object.class);
+            sendPos.add(o);
+        }
+//        List<Object> sendPos =redisTemplate.opsForValue().multiGet(keys);
         int idx = 0;
         for (Long id : ids) {
             Object o = sendPos.get(idx);
@@ -222,7 +233,8 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         imClient.sendGroupMessage(sendMessage);
         // 记录已读消息位置
         String key = StrUtil.join(":", RedisKey.IM_GROUP_READED_POSITION, groupId, session.getUserId());
-        redisTemplate.opsForValue().set(key, message.getId());
+//        redisTemplate.opsForValue().set(key, message.getId());
+        jedisTemplate.setSerializeData(key, message.getId());
 
     }
 

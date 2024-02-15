@@ -4,16 +4,16 @@ import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.thirdparty.FileService;
 import com.bx.implatform.vo.UploadImageVO;
+import io.github.stylesmile.annotation.Controller;
+import io.github.stylesmile.annotation.RequestMapping;
+import io.github.stylesmile.file.UploadedFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
-@RestController
+@Controller
 @Api(tags = "文件上传")
 @RequiredArgsConstructor
 public class FileController {
@@ -21,14 +21,15 @@ public class FileController {
     private final FileService fileService;
 
     @ApiOperation(value = "上传图片", notes = "上传图片,上传后返回原图和缩略图的url")
-    @PostMapping("/image/upload")
-    public Result<UploadImageVO> uploadImage(MultipartFile file) {
+    @RequestMapping("/image/upload")
+    public Result<UploadImageVO> uploadImage(UploadedFile file) {
         return ResultUtils.success(fileService.uploadImage(file));
     }
 
     @ApiOperation(value = "上传文件", notes = "上传文件，上传后返回文件url")
-    @PostMapping("/file/upload")
-    public Result<String> uploadFile(MultipartFile file) {
+//    @PostMapping("/file/upload")
+    @RequestMapping("/file/upload")
+    public Result<String> uploadFile(UploadedFile file) {
         return ResultUtils.success(fileService.uploadFile(file), "");
     }
 

@@ -9,15 +9,17 @@ import com.bx.implatform.util.FileUtil;
 import com.bx.implatform.util.ImageUtil;
 import com.bx.implatform.util.MinioUtil;
 import com.bx.implatform.vo.UploadImageVO;
+import io.github.stylesmile.file.UploadedFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 /**
@@ -55,10 +57,10 @@ public class FileService {
     }
 
 
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(UploadedFile file) {
         Long userId = SessionContext.getSession().getUserId();
         // 大小校验
-        if (file.getSize() > Constant.MAX_FILE_SIZE) {
+        if (file.getContentSize() > Constant.MAX_FILE_SIZE) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "文件大小不能超过10M");
         }
         // 上传
@@ -71,15 +73,15 @@ public class FileService {
         return url;
     }
 
-    public UploadImageVO uploadImage(MultipartFile file) {
+    public UploadImageVO uploadImage(UploadedFile file) {
         try {
             Long userId = SessionContext.getSession().getUserId();
             // 大小校验
-            if (file.getSize() > Constant.MAX_IMAGE_SIZE) {
+            if (file.getContentSize() > Constant.MAX_IMAGE_SIZE) {
                 throw new GlobalException(ResultCode.PROGRAM_ERROR, "图片大小不能超过5M");
             }
             // 图片格式校验
-            if (!FileUtil.isImage(file.getOriginalFilename())) {
+            if (!FileUtil.isImage(file.getName())) {
                 throw new GlobalException(ResultCode.PROGRAM_ERROR, "图片格式不合法");
             }
             // 上传原图
@@ -90,9 +92,22 @@ public class FileService {
             }
             vo.setOriginUrl(generUrl(FileType.IMAGE, fileName));
             // 大于30K的文件需上传缩略图
-            if (file.getSize() > 30 * 1024) {
-                byte[] imageByte = ImageUtil.compressForScale(file.getBytes(), 30);
-                fileName = minioUtil.upload(bucketName, imagePath, Objects.requireNonNull(file.getOriginalFilename()), imageByte, file.getContentType());
+            if (file.getContentSize() > 30 * 1024) {
+                byte[] byteArray = null;
+                try (InputStream inputStream = file.getContent();
+                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    byteArray = outputStream.toByteArray();
+                    System.out.println("字节数组长度： " + byteArray.length);
+                }
+
+                byte[] imageByte = ImageUtil.compressForScale(byteArray, 30);
+
+                fileName = minioUtil.upload(bucketName, imagePath, Objects.requireNonNull(fileName), imageByte, file.getContentType());
                 if (StringUtils.isEmpty(fileName)) {
                     throw new GlobalException(ResultCode.PROGRAM_ERROR, "图片上传失败");
                 }

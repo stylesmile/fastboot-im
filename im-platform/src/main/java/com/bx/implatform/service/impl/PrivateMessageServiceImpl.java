@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -118,10 +117,10 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         long stIdx = (page - 1) * size;
         QueryWrapper<PrivateMessage> wrapper = new QueryWrapper<>();
         wrapper.lambda().and(wrap -> wrap.and(
-                wp -> wp.eq(PrivateMessage::getSendId, userId)
-                        .eq(PrivateMessage::getRecvId, friendId))
-                .or(wp -> wp.eq(PrivateMessage::getRecvId, userId)
-                        .eq(PrivateMessage::getSendId, friendId)))
+                                wp -> wp.eq(PrivateMessage::getSendId, userId)
+                                        .eq(PrivateMessage::getRecvId, friendId))
+                        .or(wp -> wp.eq(PrivateMessage::getRecvId, userId)
+                                .eq(PrivateMessage::getSendId, friendId)))
                 .ne(PrivateMessage::getStatus, MessageStatus.RECALL.code())
                 .orderByDesc(PrivateMessage::getId)
                 .last("limit " + stIdx + "," + size);
@@ -149,8 +148,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .ge(PrivateMessage::getSendTime, minDate)
                 .ne(PrivateMessage::getStatus, MessageStatus.RECALL.code())
                 .and(wrap -> wrap.and(
-                        wp -> wp.eq(PrivateMessage::getSendId, session.getUserId())
-                                .in(PrivateMessage::getRecvId, friendIds))
+                                wp -> wp.eq(PrivateMessage::getSendId, session.getUserId())
+                                        .in(PrivateMessage::getRecvId, friendIds))
                         .or(wp -> wp.eq(PrivateMessage::getRecvId, session.getUserId())
                                 .in(PrivateMessage::getSendId, friendIds)))
                 .orderByAsc(PrivateMessage::getId)
@@ -173,7 +172,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    //    @Transactional(rollbackFor = Exception.class)
     @Override
     public void readedMessage(Long friendId) {
         UserSession session = SessionContext.getSession();
@@ -212,7 +211,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .select(PrivateMessage::getId)
                 .last("limit 1");
         PrivateMessage message = this.getOne(wrapper);
-        if(Objects.isNull(message)){
+        if (Objects.isNull(message)) {
             return -1L;
         }
         return message.getId();

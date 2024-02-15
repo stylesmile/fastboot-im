@@ -1,22 +1,17 @@
 package com.bx.implatform.session;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-
 /*
- * @Description
- * @Author Blue
- * @Date 2022/10/21
+ * @Author Stylesmile
  */
 public class SessionContext {
+    public static ThreadLocal<UserSession> userSessionThreadLocal = new ThreadLocal<>();
 
     public static UserSession getSession() {
-        // 从请求上下文里获取Request对象
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = requestAttributes.getRequest();
-        return (UserSession) request.getAttribute("session");
+        return userSessionThreadLocal.get();
+    }
+
+    public static void getSession(UserSession userSession) {
+        userSessionThreadLocal.set(userSession);
     }
 
 }
