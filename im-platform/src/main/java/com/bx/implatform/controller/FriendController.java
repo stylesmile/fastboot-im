@@ -7,6 +7,7 @@ import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.vo.FriendVO;
 import io.github.stylesmile.annotation.Controller;
+import io.github.stylesmile.annotation.RequestBody;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.annotation.RequestParam;
 import io.swagger.annotations.Api;
@@ -49,7 +50,8 @@ public class FriendController {
         return ResultUtils.success();
     }
 
-    @GetMapping("/friend/find/{friendId}")
+//    @GetMapping("/friend/find/{friendId}")
+//    @RequestMapping("/friend/find/{friendId}")
     @RequestMapping("/friend/find/{friendId}")
     @ApiOperation(value = "查找好友信息", notes = "查找好友信息")
     public Result<FriendVO> findFriend(@NotEmpty(message = "好友id不可为空") @PathVariable("friendId") Long friendId) {

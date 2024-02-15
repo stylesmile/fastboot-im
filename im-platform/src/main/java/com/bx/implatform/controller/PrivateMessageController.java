@@ -6,6 +6,7 @@ import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IPrivateMessageService;
 import com.bx.implatform.vo.PrivateMessageVO;
 import io.github.stylesmile.annotation.Controller;
+import io.github.stylesmile.annotation.RequestBody;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.annotation.RequestParam;
 import io.swagger.annotations.Api;
@@ -40,7 +41,7 @@ public class PrivateMessageController {
     }
 
 
-    @GetMapping("/message/private/loadMessage")
+//    @GetMapping("/message/private/loadMessage")
     @RequestMapping("/message/private/loadMessage")
     @ApiOperation(value = "拉取消息", notes = "拉取消息,一次最多拉取100条")
     public Result<List<PrivateMessageVO>> loadMessage(@RequestParam("minId") Long minId) {

@@ -26,14 +26,14 @@ public class GroupController {
     @ApiOperation(value = "创建群聊", notes = "创建群聊")
 //    @PostMapping("/group/create")
     @RequestMapping("/group/create")
-    public Result<GroupVO> createGroup(@Valid @RequestBody GroupVO vo) {
+    public Result<GroupVO> createGroup(@Valid  GroupVO vo) {
         return ResultUtils.success(groupService.createGroup(vo));
     }
 
     @ApiOperation(value = "修改群聊信息", notes = "修改群聊信息")
 //    @PutMapping("/group/modify")
     @RequestMapping("/group/modify")
-    public Result<GroupVO> modifyGroup(@Valid @RequestBody GroupVO vo) {
+    public Result<GroupVO> modifyGroup(@Valid  GroupVO vo) {
         return ResultUtils.success(groupService.modifyGroup(vo));
     }
 
@@ -62,7 +62,7 @@ public class GroupController {
     @ApiOperation(value = "邀请进群", notes = "邀请好友进群")
 //    @PostMapping("/group/invite")
     @RequestMapping("/group/invite")
-    public Result invite(@Valid @RequestBody GroupInviteVO vo) {
+    public Result invite(@Valid  GroupInviteVO vo) {
         groupService.invite(vo);
         return ResultUtils.success();
     }

@@ -26,7 +26,7 @@ public class GroupMessageController {
     //    @PostMapping("/message/group/send")
     @RequestMapping("/message/group/send")
     @ApiOperation(value = "发送群聊消息", notes = "发送群聊消息")
-    public Result<Long> sendMessage(@Valid @RequestBody GroupMessageDTO vo) {
+    public Result<Long> sendMessage(@Valid  GroupMessageDTO vo) {
         return ResultUtils.success(groupMessageService.sendMessage(vo));
     }
 
