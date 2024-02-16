@@ -4,21 +4,20 @@ import com.bx.implatform.config.ICEServer;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IWebrtcService;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.annotation.RequestParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Api(tags = "webrtc视频单人通话")
 @Controller
-@RequiredArgsConstructor
 public class WebrtcController {
-
-    private final IWebrtcService webrtcService;
+    @AutoWired
+    private IWebrtcService webrtcService;
 
     @ApiOperation(httpMethod = "POST", value = "呼叫视频通话")
 //    @PostMapping("/webrtc/private/call")

@@ -6,12 +6,12 @@ import com.bx.implatform.service.IGroupService;
 import com.bx.implatform.vo.GroupInviteVO;
 import com.bx.implatform.vo.GroupMemberVO;
 import com.bx.implatform.vo.GroupVO;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.annotation.RequestParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,10 +19,10 @@ import java.util.List;
 
 @Api(tags = "群聊")
 @Controller
-@RequiredArgsConstructor
 public class GroupController {
+    @AutoWired
 
-    private final IGroupService groupService;
+    private IGroupService groupService;
 
     @ApiOperation(value = "创建群聊", notes = "创建群聊")
 //    @PostMapping("/group/create")

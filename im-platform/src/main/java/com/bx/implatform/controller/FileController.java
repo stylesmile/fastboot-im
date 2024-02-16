@@ -4,21 +4,22 @@ import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.thirdparty.FileService;
 import com.bx.implatform.vo.UploadImageVO;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.file.UploadedFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @Api(tags = "文件上传")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class FileController {
 
-    private final FileService fileService;
+    @AutoWired
+    private FileService fileService;
 
     @ApiOperation(value = "上传图片", notes = "上传图片,上传后返回原图和缩略图的url")
     @RequestMapping("/image/upload")

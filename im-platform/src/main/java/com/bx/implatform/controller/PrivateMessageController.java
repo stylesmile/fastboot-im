@@ -5,13 +5,9 @@ import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IPrivateMessageService;
 import com.bx.implatform.vo.PrivateMessageVO;
-import io.github.stylesmile.annotation.Controller;
-import io.github.stylesmile.annotation.RequestBody;
-import io.github.stylesmile.annotation.RequestMapping;
-import io.github.stylesmile.annotation.RequestParam;
+import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,10 +15,10 @@ import java.util.List;
 
 @Api(tags = "私聊消息")
 @Controller
-@RequiredArgsConstructor
 public class PrivateMessageController {
+    @AutoWired
 
-    private final IPrivateMessageService privateMessageService;
+    private IPrivateMessageService privateMessageService;
 
     //    @PostMapping("/message/private/send")
     @RequestMapping("/message/private/send")

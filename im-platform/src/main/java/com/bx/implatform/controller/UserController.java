@@ -9,13 +9,9 @@ import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.vo.OnlineTerminalVO;
 import com.bx.implatform.vo.UserVO;
-import io.github.stylesmile.annotation.Controller;
-import io.github.stylesmile.annotation.RequestBody;
-import io.github.stylesmile.annotation.RequestMapping;
-import io.github.stylesmile.annotation.RequestParam;
+import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -23,12 +19,11 @@ import java.util.List;
 
 @Api(tags = "用户")
 @Controller
-@RequiredArgsConstructor
 public class UserController {
+    @AutoWired
+    private IUserService userService;
 
-    private final IUserService userService;
-
-//    @GetMapping("/user/terminal/online")
+    //    @GetMapping("/user/terminal/online")
     @RequestMapping("/user/terminal/online")
     @ApiOperation(value = "判断用户哪个终端在线", notes = "返回在线的用户id的终端集合")
     public Result<List<OnlineTerminalVO>> getOnlineTerminal(@NotEmpty @RequestParam("userIds") String userIds) {
@@ -36,7 +31,7 @@ public class UserController {
     }
 
 
-//    @GetMapping("/user/self")
+    //    @GetMapping("/user/self")
     @RequestMapping("/user/self")
     @ApiOperation(value = "获取当前用户信息", notes = "获取当前用户信息")
     public Result<UserVO> findSelfInfo() {
@@ -47,7 +42,7 @@ public class UserController {
     }
 
 
-//    @GetMapping("/user/find/{id}")
+    //    @GetMapping("/user/find/{id}")
     @RequestMapping("/user/find/{id}")
     @ApiOperation(value = "查找用户", notes = "根据id查找用户")
 //    public Result<UserVO> findById(@NotEmpty @PathVariable("id") Long id) {
@@ -55,7 +50,7 @@ public class UserController {
         return ResultUtils.success(userService.findUserById(id));
     }
 
-//    @PutMapping("/user/update")
+    //    @PutMapping("/user/update")
     @RequestMapping("/user/update")
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息，仅允许修改登录用户信息")
     public Result update(@Valid @RequestBody UserVO vo) {
@@ -63,7 +58,7 @@ public class UserController {
         return ResultUtils.success();
     }
 
-//    @GetMapping("/user/findByName")
+    //    @GetMapping("/user/findByName")
     @RequestMapping("/user/findByName")
     @ApiOperation(value = "查找用户", notes = "根据用户名或昵称查找用户")
     public Result<List<UserVO>> findByName(@RequestParam("name") String name) {

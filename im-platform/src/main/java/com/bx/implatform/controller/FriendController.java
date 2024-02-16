@@ -6,13 +6,9 @@ import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.vo.FriendVO;
-import io.github.stylesmile.annotation.Controller;
-import io.github.stylesmile.annotation.RequestBody;
-import io.github.stylesmile.annotation.RequestMapping;
-import io.github.stylesmile.annotation.RequestParam;
+import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -21,10 +17,9 @@ import java.util.stream.Collectors;
 
 @Api(tags = "好友")
 @Controller
-@RequiredArgsConstructor
 public class FriendController {
-
-    private final IFriendService friendService;
+    @AutoWired
+    private IFriendService friendService;
 
     //    @GetMapping("/friend/list")
     @RequestMapping("/friend/list")
