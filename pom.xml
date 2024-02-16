@@ -34,7 +34,9 @@
         <zxing.version>3.3.3</zxing.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <lombok.version>1.18.30</lombok.version>
-        <mysql.version>5.1.46</mysql.version>
+<!--        <mysql.version>5.1.46</mysql.version>-->
+        <mysql.version>8.0.33</mysql.version>
+
     </properties>
 
 
