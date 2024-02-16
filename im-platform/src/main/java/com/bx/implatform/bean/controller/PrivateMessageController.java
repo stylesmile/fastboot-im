@@ -1,4 +1,4 @@
-package com.bx.implatform.controller;
+package com.bx.implatform.bean.controller;
 
 import com.bx.implatform.dto.PrivateMessageDTO;
 import com.bx.implatform.result.Result;

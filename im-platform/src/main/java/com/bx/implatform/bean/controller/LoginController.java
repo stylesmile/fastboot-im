@@ -1,4 +1,4 @@
-package com.bx.implatform.controller;
+package com.bx.implatform.bean.controller;
 
 import com.bx.implatform.dto.LoginDTO;
 import com.bx.implatform.dto.ModifyPwdDTO;

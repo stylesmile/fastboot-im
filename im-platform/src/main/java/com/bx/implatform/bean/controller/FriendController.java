@@ -1,4 +1,4 @@
-package com.bx.implatform.controller;
+package com.bx.implatform.bean.controller;
 
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.result.Result;
