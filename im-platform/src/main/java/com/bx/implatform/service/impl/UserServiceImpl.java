@@ -17,9 +17,8 @@ import com.bx.implatform.entity.User;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.FriendMapper;
+import com.bx.implatform.mapper.GroupMemberMapper;
 import com.bx.implatform.mapper.UserMapper;
-import com.bx.implatform.service.IFriendService;
-import com.bx.implatform.service.IGroupMemberService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
@@ -29,7 +28,6 @@ import com.bx.implatform.vo.OnlineTerminalVO;
 import com.bx.implatform.vo.UserVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -37,22 +35,24 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 //public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 public class UserServiceImpl {
 
     //    private final PasswordEncoder passwordEncoder;
     @AutoWired
-    private final IGroupMemberService groupMemberService;
+    private FriendMapper friendMapper;
     @AutoWired
-    private final IFriendService friendService;
-    private final FriendMapper friendMapper;
+    private JwtProperties jwtProperties;
     @AutoWired
-    private final JwtProperties jwtProperties;
+    private IMClient imClient;
     @AutoWired
-    private final IMClient imClient;
+    private UserMapper userMapper;
+
     @AutoWired
-    private final UserMapper userMapper;
+    private GroupMemberMapper groupMemberMapper;
+
+    @AutoWired
+    private GroupMemberServiceImpl groupMemberService;
 
     //@Override
     public LoginVO login(LoginDTO dto) {
@@ -164,7 +164,8 @@ public class UserServiceImpl {
             for (GroupMember member : members) {
                 member.setHeadImage(vo.getHeadImageThumb());
             }
-            groupMemberService.updateBatchById(members);
+//            groupMemberService.updateBatchById(members);
+            groupMemberMapper.selectBatchIds(members);
         }
         // 更新用户信息
         user.setNickName(vo.getNickName());

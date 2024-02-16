@@ -4,11 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.implatform.contant.RedisKey;
 import com.bx.implatform.entity.GroupMember;
 import com.bx.implatform.mapper.GroupMemberMapper;
-import com.bx.implatform.service.IGroupMemberService;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import org.springframework.cache.annotation.CacheConfig;
@@ -21,19 +19,20 @@ import java.util.stream.Collectors;
 @Service
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_GROUP_MEMBER_ID)
 //public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, GroupMember> implements IGroupMemberService {
-public class GroupMemberServiceImpl  {
+public class GroupMemberServiceImpl {
     @AutoWired
     GroupMemberMapper groupMemberMapper;
+
     @CacheEvict(key = "#member.getGroupId()")
 //    @Override
     public boolean save(GroupMember member) {
-        return groupMemberMapper.insert(member)>0;
+        return groupMemberMapper.insert(member) > 0;
     }
 
     @CacheEvict(key = "#groupId")
 //    @Override
     public boolean saveOrUpdateBatch(Long groupId, List<GroupMember> members) {
-        for (GroupMember m: members) {
+        for (GroupMember m : members) {
             groupMemberMapper.updateById(m);
 
         }
@@ -42,7 +41,7 @@ public class GroupMemberServiceImpl  {
     }
 
 
-//    @Override
+    //    @Override
     public GroupMember findByGroupAndUserId(Long groupId, Long userId) {
         QueryWrapper<GroupMember> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(GroupMember::getGroupId, groupId)
@@ -50,7 +49,7 @@ public class GroupMemberServiceImpl  {
         return groupMemberMapper.selectOne(wrapper);
     }
 
-//    @Override
+    //    @Override
     public List<GroupMember> findByUserId(Long userId) {
         LambdaQueryWrapper<GroupMember> memberWrapper = Wrappers.lambdaQuery();
         memberWrapper.eq(GroupMember::getUserId, userId)
@@ -58,7 +57,7 @@ public class GroupMemberServiceImpl  {
         return groupMemberMapper.selectList(memberWrapper);
     }
 
-//    @Override
+    //    @Override
     public List<GroupMember> findByGroupId(Long groupId) {
         LambdaQueryWrapper<GroupMember> memberWrapper = Wrappers.lambdaQuery();
         memberWrapper.eq(GroupMember::getGroupId, groupId);

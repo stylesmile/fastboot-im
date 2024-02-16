@@ -12,9 +12,7 @@ import com.bx.implatform.entity.User;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMapper;
-import com.bx.implatform.service.IFriendService;
-import com.bx.implatform.service.IGroupMemberService;
-import com.bx.implatform.service.IUserService;
+import com.bx.implatform.mapper.GroupMemberMapper;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
@@ -36,20 +34,22 @@ import java.util.stream.Collectors;
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_GROUP)
 @Service
 //public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
-public class GroupServiceImpl  {
+public class GroupServiceImpl {
     @AutoWired
-    private IUserService userService;
+    private UserServiceImpl userService;
     @AutoWired
-    private IGroupMemberService groupMemberService;
+    private GroupMemberServiceImpl groupMemberService;
     @AutoWired
-    private IFriendService friendsService;
+    private GroupMemberMapper groupMemberMapper;
+    @AutoWired
+    private FriendServiceImpl friendsService;
     @AutoWired
     private IMClient imClient;
 
     @AutoWired
     private GroupMapper groupMapper;
 
-//    //@Override
+    //    //@Override
     public GroupVO createGroup(GroupVO vo) {
         UserSession session = SessionContext.getSession();
         User user = userService.getById(session.getUserId());
@@ -74,7 +74,7 @@ public class GroupServiceImpl  {
         return vo;
     }
 
-//    @CacheEvict(value = "#vo.getId()")
+    //    @CacheEvict(value = "#vo.getId()")
 //    @Transactional(rollbackFor = Exception.class)
 //    //@Override
     public GroupVO modifyGroup(GroupVO vo) {
@@ -94,7 +94,8 @@ public class GroupServiceImpl  {
         }
         member.setAliasName(StringUtils.isEmpty(vo.getAliasName()) ? session.getNickName() : vo.getAliasName());
         member.setRemark(StringUtils.isEmpty(vo.getRemark()) ? Objects.requireNonNull(group).getName() : vo.getRemark());
-        groupMemberService.updateById(member);
+//        groupMemberService.updateById(member);
+        groupMemberMapper.updateById(member);
         log.info("修改群聊，群聊id:{},群聊名称:{}", group.getId(), group.getName());
         return vo;
     }

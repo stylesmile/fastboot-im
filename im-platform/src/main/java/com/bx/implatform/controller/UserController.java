@@ -3,7 +3,6 @@ package com.bx.implatform.controller;
 import com.bx.implatform.entity.User;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.IUserService;
 import com.bx.implatform.service.impl.UserServiceImpl;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;

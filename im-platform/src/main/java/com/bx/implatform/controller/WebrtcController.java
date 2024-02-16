@@ -3,7 +3,6 @@ package com.bx.implatform.controller;
 import com.bx.implatform.config.ICEServer;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.IWebrtcService;
 import com.bx.implatform.service.impl.WebrtcServiceImpl;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;

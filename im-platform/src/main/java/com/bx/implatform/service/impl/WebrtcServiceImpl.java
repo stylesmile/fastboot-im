@@ -8,7 +8,6 @@ import com.bx.implatform.config.ICEServerConfig;
 import com.bx.implatform.contant.RedisKey;
 import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.exception.GlobalException;
-import com.bx.implatform.service.IWebrtcService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.session.WebrtcSession;
@@ -23,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class WebrtcServiceImpl implements IWebrtcService {
+public class WebrtcServiceImpl {
 
     @AutoWired
     private IMClient imClient;
@@ -32,7 +31,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
     @AutoWired
     private ICEServerConfig iceServerConfig;
 
-    @Override
+//    //@Override
     public void call(Long uid, String offer) {
         UserSession session = SessionContext.getSession();
         if (!imClient.isOnline(uid)) {
@@ -63,7 +62,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
 
     }
 
-    @Override
+//    //@Override
     public void accept(Long uid, String answer) {
         UserSession session = SessionContext.getSession();
         // 查询webrtc会话
@@ -92,7 +91,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
         imClient.sendPrivateMessage(sendMessage);
     }
 
-    @Override
+//    //@Override
     public void reject(Long uid) {
         UserSession session = SessionContext.getSession();
         // 查询webrtc会话
@@ -116,7 +115,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
         imClient.sendPrivateMessage(sendMessage);
     }
 
-    @Override
+//    //@Override
     public void cancel(Long uid) {
         UserSession session = SessionContext.getSession();
         // 删除会话信息
@@ -137,7 +136,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
         imClient.sendPrivateMessage(sendMessage);
     }
 
-    @Override
+    //@Override
     public void failed(Long uid, String reason) {
         UserSession session = SessionContext.getSession();
         // 查询webrtc会话
@@ -163,7 +162,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
 
     }
 
-    @Override
+    //@Override
     public void leave(Long uid) {
         UserSession session = SessionContext.getSession();
         // 查询webrtc会话
@@ -188,7 +187,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
         imClient.sendPrivateMessage(sendMessage);
     }
 
-    @Override
+    //@Override
     public void candidate(Long uid, String candidate) {
         UserSession session = SessionContext.getSession();
         // 查询webrtc会话
@@ -211,7 +210,7 @@ public class WebrtcServiceImpl implements IWebrtcService {
         imClient.sendPrivateMessage(sendMessage);
     }
 
-    @Override
+    //@Override
     public List<ICEServer> getIceServers() {
         return iceServerConfig.getIceServers();
     }

@@ -9,7 +9,8 @@ import com.bx.imcommon.enums.IMSendCode;
 import com.bx.imcommon.model.IMSendResult;
 import com.bx.implatform.entity.PrivateMessage;
 import com.bx.implatform.enums.MessageStatus;
-import com.bx.implatform.service.IPrivateMessageService;
+import com.bx.implatform.mapper.PrivateMessageMapper;
+import com.bx.implatform.service.impl.PrivateMessageServiceImpl;
 import com.bx.implatform.vo.PrivateMessageVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,12 @@ import java.util.Set;
 @Slf4j
 @IMListener(type = IMListenerType.PRIVATE_MESSAGE)
 public class PrivateMessageListener implements MessageListener<PrivateMessageVO> {
-    @Lazy
+//    @Lazy
     @Autowired
-    private IPrivateMessageService privateMessageService;
+    private PrivateMessageServiceImpl privateMessageService;
+
+    @Autowired
+    private PrivateMessageMapper privateMessageMapper;
     @Override
     public void process(List<IMSendResult<PrivateMessageVO>> results) {
         Set<Long> messageIds = new HashSet<>();
@@ -42,7 +46,8 @@ public class PrivateMessageListener implements MessageListener<PrivateMessageVO>
             updateWrapper.lambda().in(PrivateMessage::getId, messageIds)
                     .eq(PrivateMessage::getStatus, MessageStatus.UNSEND.code())
                     .set(PrivateMessage::getStatus, MessageStatus.SENDED.code());
-            privateMessageService.update(updateWrapper);
+//            privateMessageService.update(updateWrapper);
+            privateMessageMapper.update(updateWrapper);
         }
     }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.imclient.IMClient;
 import com.bx.imcommon.contant.IMConstant;
 import com.bx.imcommon.model.IMPrivateMessage;
@@ -17,8 +16,6 @@ import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.PrivateMessageMapper;
-import com.bx.implatform.service.IFriendService;
-import com.bx.implatform.service.IPrivateMessageService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
@@ -36,15 +33,18 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper, PrivateMessage> implements IPrivateMessageService {
+public class PrivateMessageServiceImpl {
+    //public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper, PrivateMessage> implements IPrivateMessageService {
     @AutoWired
-    private IFriendService friendService;
+    private FriendServiceImpl friendService;
     @AutoWired
     private IMClient imClient;
     @AutoWired
     private SensitiveFilterUtil sensitiveFilterUtil;
+    @AutoWired
+    private PrivateMessageMapper privateMessageMapper;
 
-    @Override
+    //@Override
     public Long sendMessage(PrivateMessageDTO dto) {
         UserSession session = SessionContext.getSession();
         Boolean isFriends = friendService.isFriend(session.getUserId(), dto.getRecvId());
@@ -56,7 +56,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         msg.setSendId(session.getUserId());
         msg.setStatus(MessageStatus.UNSEND.code());
         msg.setSendTime(new Date());
-        this.save(msg);
+//        this.save(msg);
+        privateMessageMapper.insert(msg);
         // 过滤消息内容
         String content = sensitiveFilterUtil.filter(dto.getContent());
         msg.setContent(content);
@@ -73,10 +74,11 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         return msg.getId();
     }
 
-    @Override
+    //@Override
     public void recallMessage(Long id) {
         UserSession session = SessionContext.getSession();
-        PrivateMessage msg = this.getById(id);
+//        PrivateMessage msg = this.getById(id);
+        PrivateMessage msg = privateMessageMapper.selectById(id);
         if (Objects.isNull(msg)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "消息不存在");
         }
@@ -88,7 +90,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         }
         // 修改消息状态
         msg.setStatus(MessageStatus.RECALL.code());
-        this.updateById(msg);
+//        this.updateById(msg);
+        privateMessageMapper.updateById(msg);
         // 推送消息
         PrivateMessageVO msgInfo = BeanUtils.copyProperties(msg, PrivateMessageVO.class);
         msgInfo.setType(MessageType.RECALL.code());
@@ -112,7 +115,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
     }
 
 
-    @Override
+    //@Override
     public List<PrivateMessageVO> findHistoryMessage(Long friendId, Long page, Long size) {
         page = page > 0 ? page : 1;
         size = size > 0 ? size : 10;
@@ -127,15 +130,15 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .ne(PrivateMessage::getStatus, MessageStatus.RECALL.code())
                 .orderByDesc(PrivateMessage::getId)
                 .last("limit " + stIdx + "," + size);
-
-        List<PrivateMessage> messages = this.list(wrapper);
+//        List<PrivateMessage> messages = this.list(wrapper);
+        List<PrivateMessage> messages = privateMessageMapper.selectList(wrapper);
         List<PrivateMessageVO> messageInfos = messages.stream().map(m -> BeanUtils.copyProperties(m, PrivateMessageVO.class)).collect(Collectors.toList());
         log.info("拉取聊天记录，用户id:{},好友id:{}，数量:{}", userId, friendId, messageInfos.size());
         return messageInfos;
     }
 
 
-    @Override
+    //@Override
     public List<PrivateMessageVO> loadMessage(Long minId) {
         UserSession session = SessionContext.getSession();
         List<Friend> friends = friendService.findFriendByUserId(session.getUserId());
@@ -158,7 +161,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .orderByAsc(PrivateMessage::getId)
                 .last("limit 100");
 
-        List<PrivateMessage> messages = this.list(queryWrapper);
+//        List<PrivateMessage> messages = this.list(queryWrapper);
+        List<PrivateMessage> messages = privateMessageMapper.selectList(queryWrapper);
         // 更新发送状态
         List<Long> ids = messages.stream()
                 .filter(m -> !m.getSendId().equals(session.getUserId()) && m.getStatus().equals(MessageStatus.UNSEND.code()))
@@ -168,7 +172,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
             LambdaUpdateWrapper<PrivateMessage> updateWrapper = Wrappers.lambdaUpdate();
             updateWrapper.in(PrivateMessage::getId, ids)
                     .set(PrivateMessage::getStatus, MessageStatus.SENDED.code());
-            this.update(updateWrapper);
+//            this.update(updateWrapper);
+            privateMessageMapper.update(updateWrapper);
         }
         log.info("拉取消息，用户id:{},数量:{}", session.getUserId(), messages.size());
         return messages.stream().map(m -> BeanUtils.copyProperties(m, PrivateMessageVO.class)).collect(Collectors.toList());
@@ -176,7 +181,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
 
 
     //    @Transactional(rollbackFor = Exception.class)
-    @Override
+    //@Override
     public void readedMessage(Long friendId) {
         UserSession session = SessionContext.getSession();
         // 推送消息
@@ -198,12 +203,13 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .eq(PrivateMessage::getRecvId, session.getUserId())
                 .eq(PrivateMessage::getStatus, MessageStatus.SENDED.code())
                 .set(PrivateMessage::getStatus, MessageStatus.READED.code());
-        this.update(updateWrapper);
+//        this.update(updateWrapper);
+        privateMessageMapper.update(updateWrapper);
         log.info("消息已读，接收方id:{},发送方id:{}", session.getUserId(), friendId);
     }
 
 
-    @Override
+    //@Override
     public Long getMaxReadedId(Long friendId) {
         UserSession session = SessionContext.getSession();
         LambdaQueryWrapper<PrivateMessage> wrapper = Wrappers.lambdaQuery();
@@ -213,7 +219,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .orderByDesc(PrivateMessage::getId)
                 .select(PrivateMessage::getId)
                 .last("limit 1");
-        PrivateMessage message = this.getOne(wrapper);
+//        PrivateMessage message = this.getOne(wrapper);
+        PrivateMessage message = privateMessageMapper.selectOne(wrapper);
         if (Objects.isNull(message)) {
             return -1L;
         }

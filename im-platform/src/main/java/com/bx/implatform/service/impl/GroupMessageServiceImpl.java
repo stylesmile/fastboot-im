@@ -21,7 +21,6 @@ import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMessageMapper;
-import com.bx.implatform.service.IGroupMemberService;
 import com.bx.implatform.service.IGroupService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
@@ -46,9 +45,9 @@ import java.util.stream.Collectors;
 //public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, GroupMessage> implements IGroupMessageService {
 public class GroupMessageServiceImpl {
     @AutoWired
-    private IGroupService groupService;
+    private GroupServiceImpl groupService;
     @AutoWired
-    private IGroupMemberService groupMemberService;
+    private GroupMemberServiceImpl groupMemberService;
     @AutoWired
     private JedisTemplate jedisTemplate;
     @AutoWired
