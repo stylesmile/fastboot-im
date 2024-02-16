@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class IMSender {
 
     //    @Resource(name="IMRedisTemplate")
@@ -28,7 +27,8 @@ public class IMSender {
     @Value("${spring.application.name}")
     private String appName;
 
-    private final MessageListenerMulticaster listenerMulticaster;
+    @AutoWired
+    private  MessageListenerMulticaster listenerMulticaster;
 
     public <T> void sendPrivateMessage(IMPrivateMessage<T> message) {
         List<IMSendResult> results = new LinkedList<>();
