@@ -28,8 +28,8 @@ public class LoginController {
     //    @PostMapping("/login")
     @RequestMapping("/login")
     @ApiOperation(value = "用户注册", notes = "用户注册")
-    public Result register(@Valid LoginDTO dto) {
-        LoginVO vo = userService.login(dto);
+    public Result register(@Valid LoginDTO dto,Request request) {
+        LoginVO vo = userService.login(dto,request);
         return ResultUtils.success(vo);
     }
 

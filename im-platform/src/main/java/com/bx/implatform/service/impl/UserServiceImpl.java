@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bx.imclient.IMClient;
 import com.bx.imcommon.enums.IMTerminalType;
+import com.bx.imcommon.util.IPUtil;
 import com.bx.imcommon.util.JwtUtil;
 import com.bx.implatform.config.JwtProperties;
 import com.bx.implatform.dto.LoginDTO;
@@ -28,6 +29,8 @@ import com.bx.implatform.vo.OnlineTerminalVO;
 import com.bx.implatform.vo.UserVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.jedis.JedisTemplate;
+import io.github.stylesmile.server.Request;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -53,9 +56,11 @@ public class UserServiceImpl {
 
     @AutoWired
     private GroupMemberServiceImpl groupMemberService;
+    @AutoWired
+    private JedisTemplate jedisTemplate;
 
     //@Override
-    public LoginVO login(LoginDTO dto) {
+    public LoginVO login(LoginDTO dto, Request request) {
         User user = this.findUserByUserName(dto.getUserName());
         if (null == user) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
@@ -68,14 +73,23 @@ public class UserServiceImpl {
         UserSession session = BeanUtils.copyProperties(user, UserSession.class);
         session.setUserId(user.getId());
         session.setTerminal(dto.getTerminal());
+
         String strJson = JSON.toJSONString(session);
-        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
-        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
+        String token = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
+        jedisTemplate.setSerializeDataEx(
+                String.format("user:user_info_%s", token),
+                user, 600);
+
+//        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
+//        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
         LoginVO vo = new LoginVO();
-        vo.setAccessToken(accessToken);
-        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
-        vo.setRefreshToken(refreshToken);
-        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        vo.setAccessToken(token);
+//        vo.setAccessToken(accessToken);
+//        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
+//        vo.setRefreshToken(refreshToken);
+//        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        //返回token
+        // 设置缓存，600秒
         return vo;
     }
 
@@ -107,7 +121,7 @@ public class UserServiceImpl {
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setPassword(MD5Util.calculateMD5(user.getPassword()));
 //        this.save(user);
-        userMapper.insert(user);
+        int result = userMapper.insert(user);
         log.info("注册用户，用户id:{},用户名:{},昵称:{}", user.getId(), dto.getUserName(), dto.getNickName());
     }
 

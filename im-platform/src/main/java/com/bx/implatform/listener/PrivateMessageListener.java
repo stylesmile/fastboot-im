@@ -47,7 +47,7 @@ public class PrivateMessageListener implements MessageListener<PrivateMessageVO>
                     .eq(PrivateMessage::getStatus, MessageStatus.UNSEND.code())
                     .set(PrivateMessage::getStatus, MessageStatus.SENDED.code());
 //            privateMessageService.update(updateWrapper);
-            privateMessageMapper.update(updateWrapper);
+//            privateMessageMapper.update(updateWrapper);
         }
     }
 }
