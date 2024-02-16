@@ -3,6 +3,7 @@ package com.bx.implatform.controller;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IGroupService;
+import com.bx.implatform.service.impl.GroupServiceImpl;
 import com.bx.implatform.vo.GroupInviteVO;
 import com.bx.implatform.vo.GroupMemberVO;
 import com.bx.implatform.vo.GroupVO;
@@ -21,8 +22,7 @@ import java.util.List;
 @Controller
 public class GroupController {
     @AutoWired
-
-    private IGroupService groupService;
+    private GroupServiceImpl groupService;
 
     @ApiOperation(value = "创建群聊", notes = "创建群聊")
 //    @PostMapping("/group/create")

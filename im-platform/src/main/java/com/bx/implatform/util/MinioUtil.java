@@ -1,8 +1,8 @@
 package com.bx.implatform.util;
 
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.file.UploadedFile;
 import io.minio.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -13,10 +13,10 @@ import java.util.Date;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class MinioUtil {
+    @AutoWired
 
-    private final MinioClient minioClient;
+    private MinioClient minioClient;
 
     /**
      * 查看存储bucket是否存在

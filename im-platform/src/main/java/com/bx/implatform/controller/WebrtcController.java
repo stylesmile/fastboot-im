@@ -4,6 +4,7 @@ import com.bx.implatform.config.ICEServer;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IWebrtcService;
+import com.bx.implatform.service.impl.WebrtcServiceImpl;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import java.util.List;
 @Controller
 public class WebrtcController {
     @AutoWired
-    private IWebrtcService webrtcService;
+    private WebrtcServiceImpl webrtcService;
 
     @ApiOperation(httpMethod = "POST", value = "呼叫视频通话")
 //    @PostMapping("/webrtc/private/call")

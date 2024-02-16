@@ -2,7 +2,6 @@ package com.bx.implatform.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.imclient.IMClient;
 import com.bx.implatform.contant.Constant;
 import com.bx.implatform.contant.RedisKey;
@@ -15,7 +14,6 @@ import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMapper;
 import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.service.IGroupMemberService;
-import com.bx.implatform.service.IGroupService;
 import com.bx.implatform.service.IUserService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
@@ -23,13 +21,13 @@ import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.vo.GroupInviteVO;
 import com.bx.implatform.vo.GroupMemberVO;
 import com.bx.implatform.vo.GroupVO;
-import lombok.RequiredArgsConstructor;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,21 +35,29 @@ import java.util.stream.Collectors;
 @Slf4j
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_GROUP)
 @Service
-@RequiredArgsConstructor
-public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
-    private final IUserService userService;
-    private final IGroupMemberService groupMemberService;
-    private final IFriendService friendsService;
-    private final IMClient imClient;
+//public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
+public class GroupServiceImpl  {
+    @AutoWired
+    private IUserService userService;
+    @AutoWired
+    private IGroupMemberService groupMemberService;
+    @AutoWired
+    private IFriendService friendsService;
+    @AutoWired
+    private IMClient imClient;
 
-    @Override
+    @AutoWired
+    private GroupMapper groupMapper;
+
+//    //@Override
     public GroupVO createGroup(GroupVO vo) {
         UserSession session = SessionContext.getSession();
         User user = userService.getById(session.getUserId());
         // 保存群组数据
         Group group = BeanUtils.copyProperties(vo, Group.class);
         group.setOwnerId(user.getId());
-        this.save(group);
+//        this.save(group);
+        groupMapper.insert(group);
         // 把群主加入群
         GroupMember groupMember = new GroupMember();
         groupMember.setGroupId(group.getId());
@@ -68,9 +74,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         return vo;
     }
 
-    @CacheEvict(value = "#vo.getId()")
+//    @CacheEvict(value = "#vo.getId()")
 //    @Transactional(rollbackFor = Exception.class)
-    @Override
+//    //@Override
     public GroupVO modifyGroup(GroupVO vo) {
         UserSession session = SessionContext.getSession();
         // 校验是不是群主，只有群主能改信息
@@ -78,7 +84,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         // 群主有权修改群基本信息
         if (group.getOwnerId().equals(session.getUserId())) {
             group = BeanUtils.copyProperties(vo, Group.class);
-            this.updateById(group);
+//            this.updateById(group);
+            groupMapper.updateById(group);
         }
         // 更新成员信息
         GroupMember member = groupMemberService.findByGroupAndUserId(vo.getId(), session.getUserId());
@@ -92,9 +99,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         return vo;
     }
 
-//    @Transactional(rollbackFor = Exception.class)
+    //    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "#groupId")
-    @Override
+//    //@Override
     public void deleteGroup(Long groupId) {
         UserSession session = SessionContext.getSession();
         Group group = this.getById(groupId);
@@ -103,13 +110,14 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         }
         // 逻辑删除群数据
         group.setDeleted(true);
-        this.updateById(group);
+//        this.updateById(group);
+        groupMapper.updateById(group);
         // 删除成员数据
         groupMemberService.removeByGroupId(groupId);
         log.info("删除群聊，群聊id:{},群聊名称:{}", group.getId(), group.getName());
     }
 
-    @Override
+    //@Override
     public void quitGroup(Long groupId) {
         Long userId = SessionContext.getSession().getUserId();
         Group group = this.getById(groupId);
@@ -121,7 +129,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         log.info("退出群聊，群聊id:{},群聊名称:{},用户id:{}", group.getId(), group.getName(), userId);
     }
 
-    @Override
+    //@Override
     public void kickGroup(Long groupId, Long userId) {
         UserSession session = SessionContext.getSession();
         Group group = this.getById(groupId);
@@ -136,7 +144,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         log.info("踢出群聊，群聊id:{},群聊名称:{},用户id:{}", group.getId(), group.getName(), userId);
     }
 
-    @Override
+    //@Override
     public GroupVO findById(Long groupId) {
         UserSession session = SessionContext.getSession();
         Group group = this.getById(groupId);
@@ -151,9 +159,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @Cacheable(value = "#groupId")
-    @Override
+    //@Override
     public Group getById(Long groupId) {
-        Group group = super.getById(groupId);
+//        Group group = super.getById(groupId);
+        Group group = groupMapper.selectById(groupId);
         if (group == null) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "群组不存在");
         }
@@ -163,7 +172,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         return group;
     }
 
-    @Override
+    //@Override
     public List<GroupVO> findGroups() {
         UserSession session = SessionContext.getSession();
         // 查询当前用户的群id列表
@@ -175,7 +184,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         List<Long> ids = groupMembers.stream().map((GroupMember::getGroupId)).collect(Collectors.toList());
         LambdaQueryWrapper<Group> groupWrapper = Wrappers.lambdaQuery();
         groupWrapper.in(Group::getId, ids);
-        List<Group> groups = this.list(groupWrapper);
+//        List<Group> groups = this.list(groupWrapper);
+        List<Group> groups = groupMapper.selectList(groupWrapper);
         // 转vo
         return groups.stream().map(g -> {
             GroupVO vo = BeanUtils.copyProperties(g, GroupVO.class);
@@ -186,7 +196,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         }).collect(Collectors.toList());
     }
 
-    @Override
+    //@Override
     public void invite(GroupInviteVO vo) {
         UserSession session = SessionContext.getSession();
         Group group = this.getById(vo.getGroupId());
@@ -225,7 +235,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         log.info("邀请进入群聊，群聊id:{},群聊名称:{},被邀请用户id:{}", group.getId(), group.getName(), vo.getFriendIds());
     }
 
-    @Override
+    //@Override
     public List<GroupMemberVO> findGroupMembers(Long groupId) {
         List<GroupMember> members = groupMemberService.findByGroupId(groupId);
         List<Long> userIds = members.stream().map(GroupMember::getUserId).collect(Collectors.toList());

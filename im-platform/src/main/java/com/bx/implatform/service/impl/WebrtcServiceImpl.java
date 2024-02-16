@@ -14,9 +14,9 @@ import com.bx.implatform.session.UserSession;
 import com.bx.implatform.session.WebrtcSession;
 import com.bx.implatform.vo.PrivateMessageVO;
 import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;

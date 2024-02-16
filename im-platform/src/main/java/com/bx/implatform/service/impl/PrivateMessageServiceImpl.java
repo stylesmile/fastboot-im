@@ -24,10 +24,11 @@ import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.util.SensitiveFilterUtil;
 import com.bx.implatform.vo.PrivateMessageVO;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,10 +37,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper, PrivateMessage> implements IPrivateMessageService {
-
-    private final IFriendService friendService;
-    private final IMClient imClient;
-    private final SensitiveFilterUtil sensitiveFilterUtil;
+    @AutoWired
+    private IFriendService friendService;
+    @AutoWired
+    private IMClient imClient;
+    @AutoWired
+    private SensitiveFilterUtil sensitiveFilterUtil;
 
     @Override
     public Long sendMessage(PrivateMessageDTO dto) {

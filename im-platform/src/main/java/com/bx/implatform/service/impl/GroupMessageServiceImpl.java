@@ -7,7 +7,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.imclient.IMClient;
 import com.bx.imcommon.contant.IMConstant;
 import com.bx.imcommon.model.IMGroupMessage;
@@ -23,7 +22,6 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMessageMapper;
 import com.bx.implatform.service.IGroupMemberService;
-import com.bx.implatform.service.IGroupMessageService;
 import com.bx.implatform.service.IGroupService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
@@ -32,12 +30,12 @@ import com.bx.implatform.util.SensitiveFilterUtil;
 import com.bx.implatform.vo.GroupMessageVO;
 import com.google.common.base.Splitter;
 import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +43,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, GroupMessage> implements IGroupMessageService {
+//public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, GroupMessage> implements IGroupMessageService {
+public class GroupMessageServiceImpl {
     @AutoWired
     private IGroupService groupService;
     @AutoWired
@@ -56,8 +55,10 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
     private IMClient imClient;
     @AutoWired
     private SensitiveFilterUtil sensitiveFilterUtil;
+    @AutoWired
+    private GroupMessageMapper groupMessageMapper;
 
-    @Override
+//    @Override
     public Long sendMessage(GroupMessageDTO dto) {
         UserSession session = SessionContext.getSession();
         Group group = groupService.getById(dto.getGroupId());
@@ -84,7 +85,8 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         if (CollectionUtil.isNotEmpty(dto.getAtUserIds())) {
             msg.setAtUserIds(StrUtil.join(",", dto.getAtUserIds()));
         }
-        this.save(msg);
+        groupMessageMapper.insert(msg);
+//        this.save(msg);
         // 过滤消息内容
         String content = sensitiveFilterUtil.filter(dto.getContent());
         msg.setContent(content);
@@ -101,10 +103,11 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         return msg.getId();
     }
 
-    @Override
+//    @Override
     public void recallMessage(Long id) {
         UserSession session = SessionContext.getSession();
-        GroupMessage msg = this.getById(id);
+//        GroupMessage msg = this.getById(id);
+        GroupMessage msg = groupMessageMapper.selectById(id);
         if (Objects.isNull(msg)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "消息不存在");
         }
@@ -121,7 +124,8 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         }
         // 修改数据库
         msg.setStatus(MessageStatus.RECALL.code());
-        this.updateById(msg);
+//        this.updateById(msg);
+        groupMessageMapper.updateById(msg);
         // 群发
         List<Long> userIds = groupMemberService.findUserIdsByGroupId(msg.getGroupId());
         // 不用发给自己
@@ -150,7 +154,7 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
     }
 
 
-    @Override
+//    @Override
     public List<GroupMessageVO> loadMessage(Long minId) {
         UserSession session = SessionContext.getSession();
         List<GroupMember> members = groupMemberService.findByUserId(session.getUserId());
@@ -165,7 +169,8 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         wrapper.gt(GroupMessage::getId, minId).gt(GroupMessage::getSendTime, minDate).in(GroupMessage::getGroupId, ids)
                 .ne(GroupMessage::getStatus, MessageStatus.RECALL.code()).orderByAsc(GroupMessage::getId).last("limit 100");
 
-        List<GroupMessage> messages = this.list(wrapper);
+//        List<GroupMessage> messages = this.list(wrapper);
+        List<GroupMessage> messages = groupMessageMapper.selectList(wrapper);
         // 转成vo
         List<GroupMessageVO> vos = messages.stream()
                 .filter(m -> {
@@ -209,13 +214,14 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         return vos;
     }
 
-    @Override
+//    @Override
     public void readedMessage(Long groupId) {
         UserSession session = SessionContext.getSession();
         // 取出最后的消息id
         LambdaQueryWrapper<GroupMessage> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(GroupMessage::getGroupId, groupId).orderByDesc(GroupMessage::getId).last("limit 1").select(GroupMessage::getId);
-        GroupMessage message = this.getOne(wrapper);
+//        GroupMessage message = this.getOne(wrapper);
+        GroupMessage message = groupMessageMapper.selectOne(wrapper);
         if (Objects.isNull(message)) {
             return;
         }
@@ -238,7 +244,7 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
 
     }
 
-    @Override
+//    @Override
     public List<GroupMessageVO> findHistoryMessage(Long groupId, Long page, Long size) {
         page = page > 0 ? page : 1;
         size = size > 0 ? size : 10;
@@ -254,7 +260,8 @@ public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, Gro
         wrapper.lambda().eq(GroupMessage::getGroupId, groupId).gt(GroupMessage::getSendTime, member.getCreatedTime())
                 .ne(GroupMessage::getStatus, MessageStatus.RECALL.code()).orderByDesc(GroupMessage::getId).last("limit " + stIdx + "," + size);
 
-        List<GroupMessage> messages = this.list(wrapper);
+//        List<GroupMessage> messages = this.list(wrapper);
+        List<GroupMessage> messages = groupMessageMapper.selectList(wrapper);
         List<GroupMessageVO> messageInfos =
                 messages.stream().map(m -> BeanUtils.copyProperties(m, GroupMessageVO.class)).collect(Collectors.toList());
         log.info("拉取群聊记录，用户id:{},群聊id:{}，数量:{}", userId, groupId, messageInfos.size());

@@ -4,6 +4,7 @@ import com.bx.implatform.entity.User;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IUserService;
+import com.bx.implatform.service.impl.UserServiceImpl;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
@@ -21,7 +22,7 @@ import java.util.List;
 @Controller
 public class UserController {
     @AutoWired
-    private IUserService userService;
+    private UserServiceImpl userService;
 
     //    @GetMapping("/user/terminal/online")
     @RequestMapping("/user/terminal/online")

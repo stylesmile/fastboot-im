@@ -6,7 +6,7 @@ import com.bx.implatform.vo.FriendVO;
 
 import java.util.List;
 
-public interface IFriendService extends IService<Friend> {
+public interface IFriendService {
 
     /**
      * 判断用户2是否用户1的好友

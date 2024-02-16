@@ -3,7 +3,6 @@ package com.bx.implatform.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.implatform.contant.RedisKey;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.entity.User;
@@ -11,38 +10,40 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.FriendMapper;
 import com.bx.implatform.mapper.UserMapper;
-import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.FriendVO;
-import lombok.RequiredArgsConstructor;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_FRIEND)
-public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> implements IFriendService {
+public class FriendServiceImpl {
 
-    private final UserMapper userMapper;
+    @AutoWired
+    private UserMapper userMapper;
 
-    @Override
+    @AutoWired
+    private FriendMapper friendMapper;
+
+//    @Override
     public List<Friend> findFriendByUserId(Long userId) {
         LambdaQueryWrapper<Friend> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Friend::getUserId, userId);
-        return this.list(queryWrapper);
+        return friendMapper.selectList(queryWrapper);
     }
 
 
 //    @Transactional(rollbackFor = Exception.class)
-    @Override
+//    @Override
     public void addFriend(Long friendId) {
         long userId = SessionContext.getSession().getUserId();
         if (userId == friendId) {
@@ -57,7 +58,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
 
 
 //    @Transactional(rollbackFor = Exception.class)
-    @Override
+//    @Override
     public void delFriend(Long friendId) {
         long userId = SessionContext.getSession().getUserId();
         // 互相解除好友关系，走代理清理缓存
@@ -68,18 +69,18 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
     }
 
 
-    @Cacheable(key = "#userId1+':'+#userId2")
-    @Override
+//    @Cacheable(key = "#userId1+':'+#userId2")
+//    @Override
     public Boolean isFriend(Long userId1, Long userId2) {
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(Friend::getUserId, userId1)
                 .eq(Friend::getFriendId, userId2);
-        return this.count(queryWrapper) > 0;
+        return friendMapper.selectCount(queryWrapper) > 0;
     }
 
 
-    @Override
+//    @Override
     public void update(FriendVO vo) {
         long userId = SessionContext.getSession().getUserId();
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
@@ -87,14 +88,14 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
                 .eq(Friend::getUserId, userId)
                 .eq(Friend::getFriendId, vo.getId());
 
-        Friend f = this.getOne(queryWrapper);
+        Friend f = friendMapper.selectOne(queryWrapper);
         if (f == null) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "对方不是您的好友");
         }
 
         f.setFriendHeadImage(vo.getHeadImage());
         f.setFriendNickName(vo.getNickName());
-        this.updateById(f);
+        this.friendMapper.updateById(f);
     }
 
 
@@ -110,14 +111,14 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
         queryWrapper.lambda()
                 .eq(Friend::getUserId, userId)
                 .eq(Friend::getFriendId, friendId);
-        if (this.count(queryWrapper) == 0) {
+        if (friendMapper.selectCount(queryWrapper) == 0) {
             Friend friend = new Friend();
             friend.setUserId(userId);
             friend.setFriendId(friendId);
             User friendInfo = userMapper.selectById(friendId);
             friend.setFriendHeadImage(friendInfo.getHeadImage());
             friend.setFriendNickName(friendInfo.getNickName());
-            this.save(friend);
+            friendMapper.insert(friend);
         }
     }
 
@@ -128,25 +129,28 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
      * @param userId   用户id
      * @param friendId 好友的用户id
      */
-    @CacheEvict(key = "#userId+':'+#friendId")
+//    @CacheEvict(key = "#userId+':'+#friendId")
     public void unbindFriend(Long userId, Long friendId) {
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(Friend::getUserId, userId)
                 .eq(Friend::getFriendId, friendId);
-        List<Friend> friends = this.list(queryWrapper);
-        friends.forEach(friend -> this.removeById(friend.getId()));
+//        List<Friend> friends = this.list(queryWrapper);
+        List<Friend> friends = friendMapper.selectList(queryWrapper);
+//        friends.forEach(friend -> this.removeById(friend.getId()));
+        friends.forEach(friend -> friendMapper.deleteById(friend.getId()));
     }
 
 
-    @Override
+//    @Override
     public FriendVO findFriend(Long friendId) {
         UserSession session = SessionContext.getSession();
         QueryWrapper<Friend> wrapper = new QueryWrapper<>();
         wrapper.lambda()
                 .eq(Friend::getUserId, session.getUserId())
                 .eq(Friend::getFriendId, friendId);
-        Friend friend = this.getOne(wrapper);
+//        Friend friend = this.getOne(wrapper);
+        Friend friend = friendMapper.selectOne(wrapper);
         if (friend == null) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "对方不是您的好友");
         }

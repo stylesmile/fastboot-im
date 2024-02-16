@@ -4,6 +4,7 @@ import com.bx.implatform.entity.Friend;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IFriendService;
+import com.bx.implatform.service.impl.FriendServiceImpl;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.vo.FriendVO;
 import io.github.stylesmile.annotation.*;
@@ -19,7 +20,8 @@ import java.util.stream.Collectors;
 @Controller
 public class FriendController {
     @AutoWired
-    private IFriendService friendService;
+//    private IFriendService friendService;
+    private FriendServiceImpl friendService;
 
     //    @GetMapping("/friend/list")
     @RequestMapping("/friend/list")

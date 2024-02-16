@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.imclient.IMClient;
 import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.util.JwtUtil;
@@ -17,21 +16,21 @@ import com.bx.implatform.entity.GroupMember;
 import com.bx.implatform.entity.User;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
+import com.bx.implatform.mapper.FriendMapper;
 import com.bx.implatform.mapper.UserMapper;
 import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.service.IGroupMemberService;
-import com.bx.implatform.service.IUserService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
+import com.bx.implatform.util.MD5Util;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.OnlineTerminalVO;
 import com.bx.implatform.vo.UserVO;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,21 +38,30 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+//public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+public class UserServiceImpl {
 
-//    private final PasswordEncoder passwordEncoder;
+    //    private final PasswordEncoder passwordEncoder;
+    @AutoWired
     private final IGroupMemberService groupMemberService;
+    @AutoWired
     private final IFriendService friendService;
+    private final FriendMapper friendMapper;
+    @AutoWired
     private final JwtProperties jwtProperties;
+    @AutoWired
     private final IMClient imClient;
+    @AutoWired
+    private final UserMapper userMapper;
 
-    @Override
+    //@Override
     public LoginVO login(LoginDTO dto) {
         User user = this.findUserByUserName(dto.getUserName());
         if (null == user) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
         }
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!MD5Util.calculateMD5(dto.getPassword()).equals(user.getPassword())) {
+//            if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new GlobalException(ResultCode.PASSWOR_ERROR);
         }
         // 生成token
@@ -71,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return vo;
     }
 
-    @Override
+    //@Override
     public LoginVO refreshToken(String refreshToken) {
         //验证 token
         if (!JwtUtil.checkSign(refreshToken, jwtProperties.getRefreshTokenSecret())) {
@@ -89,45 +97,51 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return vo;
     }
 
-    @Override
+    //@Override
     public void register(RegisterDTO dto) {
         User user = this.findUserByUserName(dto.getUserName());
         if (null != user) {
             throw new GlobalException(ResultCode.USERNAME_ALREADY_REGISTER);
         }
         user = BeanUtils.copyProperties(dto, User.class);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        this.save(user);
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(MD5Util.calculateMD5(user.getPassword()));
+//        this.save(user);
+        userMapper.insert(user);
         log.info("注册用户，用户id:{},用户名:{},昵称:{}", user.getId(), dto.getUserName(), dto.getNickName());
     }
 
-    @Override
+    //@Override
     public void modifyPassword(ModifyPwdDTO dto) {
         UserSession session = SessionContext.getSession();
-        User user = this.getById(session.getUserId());
-        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+//        User user = this.getById(session.getUserId());
+        User user = userMapper.selectById(session.getUserId());
+        if (!MD5Util.calculateMD5(dto.getOldPassword()).equals(user.getPassword())) {
             throw new GlobalException("旧密码不正确");
         }
-        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-        this.updateById(user);
+        user.setPassword(MD5Util.calculateMD5(dto.getNewPassword()));
+//        this.updateById(user);
+        userMapper.updateById(user);
         log.info("用户修改密码，用户id:{},用户名:{},昵称:{}", user.getId(), user.getUserName(), user.getNickName());
     }
 
-    @Override
+    //@Override
     public User findUserByUserName(String username) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getUserName, username);
-        return this.getOne(queryWrapper);
+//        return this.getOne(queryWrapper);
+        return userMapper.selectOne(queryWrapper);
     }
 
-//    @Transactional(rollbackFor = Exception.class)
-    @Override
+    //    @Transactional(rollbackFor = Exception.class)
+    //@Override
     public void update(UserVO vo) {
         UserSession session = SessionContext.getSession();
         if (!session.getUserId().equals(vo.getId())) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "不允许修改其他用户的信息!");
         }
-        User user = this.getById(vo.getId());
+//        User user = this.getById(vo.getId());
+        User user = userMapper.selectById(vo.getId());
         if (Objects.isNull(user)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
         }
@@ -135,12 +149,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!user.getNickName().equals(vo.getNickName()) || !user.getHeadImageThumb().equals(vo.getHeadImageThumb())) {
             QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
             queryWrapper.lambda().eq(Friend::getFriendId, session.getUserId());
-            List<Friend> friends = friendService.list(queryWrapper);
+//            List<Friend> friends = friendService.list(queryWrapper);
+            List<Friend> friends = friendMapper.selectList(queryWrapper);
             for (Friend friend : friends) {
                 friend.setFriendNickName(vo.getNickName());
                 friend.setFriendHeadImage(vo.getHeadImageThumb());
+                friendMapper.updateById(friend);
             }
-            friendService.updateBatchById(friends);
+//            friendService.updateBatchById(friends);
         }
         // 更新群聊中的头像
         if (!user.getHeadImageThumb().equals(vo.getHeadImageThumb())) {
@@ -156,23 +172,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setSignature(vo.getSignature());
         user.setHeadImage(vo.getHeadImage());
         user.setHeadImageThumb(vo.getHeadImageThumb());
-        this.updateById(user);
+//        this.updateById(user);
+        userMapper.updateById(user);
         log.info("用户信息更新，用户:{}}", user);
     }
 
-    @Override
+    //@Override
     public UserVO findUserById(Long id) {
-        User user = this.getById(id);
+//        User user = this.getById(id);
+        User user = userMapper.selectById(id);
         UserVO vo = BeanUtils.copyProperties(user, UserVO.class);
         vo.setOnline(imClient.isOnline(id));
         return vo;
     }
 
-    @Override
+    //@Override
     public List<UserVO> findUserByName(String name) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.like(User::getUserName, name).or().like(User::getNickName, name).last("limit 20");
-        List<User> users = this.list(queryWrapper);
+//        List<User> users = this.list(queryWrapper);
+        List<User> users = userMapper.selectList(queryWrapper);
         List<Long> userIds = users.stream().map(User::getId).collect(Collectors.toList());
         List<Long> onlineUserIds = imClient.getOnlineUser(userIds);
         return users.stream().map(u -> {
@@ -182,7 +201,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }).collect(Collectors.toList());
     }
 
-    @Override
+    //@Override
     public List<OnlineTerminalVO> getOnlineTerminals(String userIds) {
         List<Long> userIdList = Arrays.stream(userIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
         // 查询在线的终端
@@ -194,5 +213,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             vos.add(new OnlineTerminalVO(userId, terminals));
         });
         return vos;
+    }
+
+    public User getById(Long userId) {
+        return userMapper.selectById(userId);
     }
 }

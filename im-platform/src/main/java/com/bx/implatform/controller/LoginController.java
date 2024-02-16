@@ -6,6 +6,8 @@ import com.bx.implatform.dto.RegisterDTO;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IUserService;
+import com.bx.implatform.service.impl.UserServiceImpl;
+import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.LoginVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
@@ -23,7 +25,7 @@ import javax.validation.Valid;
 public class LoginController {
     @AutoWired
 
-    private IUserService userService;
+    private UserServiceImpl userService;
 
     //    @PostMapping("/login")
     @RequestMapping("/login")
