@@ -3,7 +3,6 @@ package com.bx.implatform.bean.controller;
 import com.bx.implatform.dto.PrivateMessageDTO;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.IPrivateMessageService;
 import com.bx.implatform.service.impl.PrivateMessageServiceImpl;
 import com.bx.implatform.vo.PrivateMessageVO;
 import io.github.stylesmile.annotation.*;
