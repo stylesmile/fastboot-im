@@ -11,6 +11,7 @@ import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestBody;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.request.RequestMethod;
+import io.github.stylesmile.server.Request;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,9 @@ public class LoginController {
     //    @PutMapping("/refreshToken")
     @RequestMapping("/refreshToken")
     @ApiOperation(value = "刷新token", notes = "用refreshtoken换取新的token")
-    public Result refreshToken(@RequestHeader("refreshToken") String refreshToken) {
+//    public Result refreshToken(@RequestHeader("refreshToken") String refreshToken) {
+    public Result refreshToken(Request re) {
+        String refreshToken = re.getHeaders().get("refreshToken");
         LoginVO vo = userService.refreshToken(refreshToken);
         return ResultUtils.success(vo);
     }

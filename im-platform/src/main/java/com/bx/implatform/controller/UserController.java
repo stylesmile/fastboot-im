@@ -10,6 +10,7 @@ import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.vo.OnlineTerminalVO;
 import com.bx.implatform.vo.UserVO;
 import io.github.stylesmile.annotation.Controller;
+import io.github.stylesmile.annotation.RequestBody;
 import io.github.stylesmile.annotation.RequestMapping;
 import io.github.stylesmile.annotation.RequestParam;
 import io.swagger.annotations.Api;
@@ -49,7 +50,8 @@ public class UserController {
 //    @GetMapping("/user/find/{id}")
     @RequestMapping("/user/find/{id}")
     @ApiOperation(value = "查找用户", notes = "根据id查找用户")
-    public Result<UserVO> findById(@NotEmpty @PathVariable("id") Long id) {
+//    public Result<UserVO> findById(@NotEmpty @PathVariable("id") Long id) {
+    public Result<UserVO> findById(@NotEmpty Long id) {
         return ResultUtils.success(userService.findUserById(id));
     }
 

@@ -35,13 +35,14 @@ public class PrivateMessageController {
     //    @DeleteMapping("/message/private/recall/{id}")
     @RequestMapping("/message/private/recall/{id}")
     @ApiOperation(value = "撤回消息", notes = "撤回私聊消息")
-    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") @PathVariable Long id) {
+//    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") @PathVariable Long id) {
+    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") Long id) {
         privateMessageService.recallMessage(id);
         return ResultUtils.success();
     }
 
 
-//    @GetMapping("/message/private/loadMessage")
+    //    @GetMapping("/message/private/loadMessage")
     @RequestMapping("/message/private/loadMessage")
     @ApiOperation(value = "拉取消息", notes = "拉取消息,一次最多拉取100条")
     public Result<List<PrivateMessageVO>> loadMessage(@RequestParam("minId") Long minId) {

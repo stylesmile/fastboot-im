@@ -33,7 +33,8 @@ public class GroupMessageController {
     //    @DeleteMapping("/message/group/recall/{id}")
     @RequestMapping("/message/group/recall/{id}")
     @ApiOperation(value = "撤回消息", notes = "撤回群聊消息")
-    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") @PathVariable Long id) {
+//    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") @PathVariable Long id) {
+    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空")  Long id) {
         groupMessageService.recallMessage(id);
         return ResultUtils.success();
     }
@@ -42,7 +43,7 @@ public class GroupMessageController {
     //    @GetMapping("/message/group/loadMessage")
     @RequestMapping("/message/group/loadMessage")
     @ApiOperation(value = "拉取消息", notes = "拉取消息,一次最多拉取100条")
-    public Result<List<GroupMessageVO>> loadMessage(@RequestParam Long minId) {
+    public Result<List<GroupMessageVO>> loadMessage(@RequestParam("minId") Long minId) {
         return ResultUtils.success(groupMessageService.loadMessage(minId));
     }
 
