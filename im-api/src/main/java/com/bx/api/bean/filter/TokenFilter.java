@@ -21,6 +21,9 @@ import java.util.HashMap;
 public class TokenFilter implements Filter {
     private static HashMap<String, String> FILTER_MAP = new HashMap<String, String>() {{
         put("/login", "1");
+        put("/register", "1");
+        put("/logout", "1");
+        put("/refreshToken", "1");
     }};
 
 
