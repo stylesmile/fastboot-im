@@ -10,9 +10,9 @@ import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.model.*;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.ioc.Value;
 import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 
@@ -24,9 +24,8 @@ public class IMSender {
     @AutoWired
     JedisTemplate jedisTemplate;
 
-    @Value("${spring.application.name}")
+    @Value("fast.name")
     private String appName;
-
     @AutoWired
     private  MessageListenerMulticaster listenerMulticaster;
 
