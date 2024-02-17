@@ -83,8 +83,7 @@ public class GroupMemberServiceImpl {
         wrapper.eq(GroupMember::getGroupId, groupId)
                 .set(GroupMember::getQuit, true);
 //        this.update(wrapper);
-//        groupMemberMapper.update(wrapper);
-//        groupMemberMapper.update(wrapper);
+        groupMemberMapper.update(wrapper);
     }
 
     @CacheEvict(key = "#groupId")
@@ -95,6 +94,7 @@ public class GroupMemberServiceImpl {
                 .eq(GroupMember::getUserId, userId)
                 .set(GroupMember::getQuit, true);
 //        this.update(wrapper);
-//        groupMemberMapper.update(wrapper);
+
+        groupMemberMapper.update(wrapper);
     }
 }

@@ -174,7 +174,7 @@ public class PrivateMessageServiceImpl {
                     .set(PrivateMessage::getStatus, MessageStatus.SENDED.code());
 //            this.update(updateWrapper);
 
-//            privateMessageMapper.update(updateWrapper);
+            privateMessageMapper.update(updateWrapper);
         }
         log.info("拉取消息，用户id:{},数量:{}", session.getUserId(), messages.size());
         return messages.stream().map(m -> BeanUtils.copyProperties(m, PrivateMessageVO.class)).collect(Collectors.toList());
@@ -205,7 +205,7 @@ public class PrivateMessageServiceImpl {
                 .eq(PrivateMessage::getStatus, MessageStatus.SENDED.code())
                 .set(PrivateMessage::getStatus, MessageStatus.READED.code());
 //        this.update(updateWrapper);
-//        privateMessageMapper.update(updateWrapper);
+        privateMessageMapper.update(updateWrapper);
         log.info("消息已读，接收方id:{},发送方id:{}", session.getUserId(), friendId);
     }
 
