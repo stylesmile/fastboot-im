@@ -7,6 +7,8 @@ import com.bx.imserver.constant.ChannelAttrKey;
 import com.bx.imserver.netty.processor.AbstractMessageProcessor;
 import com.bx.imserver.netty.processor.ProcessorFactory;
 import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.ioc.BeanContainer;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -21,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  * 浏览器连接状态监控
  */
 @Slf4j
+@Service
 public class IMChannelHandler extends SimpleChannelInboundHandler<IMSendInfo> {
 
     @AutoWired
@@ -78,7 +81,10 @@ public class IMChannelHandler extends SimpleChannelInboundHandler<IMSendInfo> {
 //            RedisTemplate<String, Object> redisTemplate = SpringContextHolder.getBean("redisTemplate");
             String key = String.join(":", IMRedisKey.IM_USER_SERVER_ID, userId.toString(), terminal.toString());
 //            redisTemplate.delete(key);
-            jedisTemplate.delete(key);
+            if(jedisTemplate == null){
+                jedisTemplate = BeanContainer.getInstance(JedisTemplate.class);
+            }
+            //jedisTemplate.delete(key);
             log.info("断开连接,userId:{},终端类型:{}", userId, terminal);
         }
     }
