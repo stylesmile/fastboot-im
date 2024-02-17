@@ -1,13 +1,13 @@
 package com.bx.api.bean.service;
 
-import com.bx.api.contant.Constant;
-import com.bx.api.enums.FileType;
-import com.bx.api.enums.ResultCode;
-import com.bx.api.exception.GlobalException;
+import com.bx.api.common.contant.Constant;
+import com.bx.api.common.enums.FileType;
+import com.bx.api.common.enums.ResultCode;
+import com.bx.api.common.exception.GlobalException;
 import com.bx.api.common.util.FileUtil;
 import com.bx.api.common.util.ImageUtil;
 import com.bx.api.common.util.MinioUtil;
-import com.bx.api.vo.UploadImageVO;
+import com.bx.api.domain.vo.UploadImageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.file.UploadedFile;

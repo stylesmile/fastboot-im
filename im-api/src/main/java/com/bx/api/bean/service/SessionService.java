@@ -1,6 +1,6 @@
 package com.bx.api.bean.service;
 
-import com.bx.api.session.UserSession;
+import com.bx.api.domain.dto.session.UserSession;
 import io.github.stylesmile.annotation.Service;
 
 /*

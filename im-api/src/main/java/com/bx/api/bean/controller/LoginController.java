@@ -1,12 +1,12 @@
 package com.bx.api.bean.controller;
 
-import com.bx.api.dto.LoginDTO;
-import com.bx.api.dto.ModifyPwdDTO;
-import com.bx.api.dto.RegisterDTO;
-import com.bx.api.result.Result;
-import com.bx.api.result.ResultUtils;
+import com.bx.api.domain.dto.LoginDTO;
+import com.bx.api.domain.dto.ModifyPwdDTO;
+import com.bx.api.domain.dto.RegisterDTO;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.UserService;
-import com.bx.api.vo.LoginVO;
+import com.bx.api.domain.vo.LoginVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestBody;

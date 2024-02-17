@@ -7,11 +7,11 @@ import com.bx.imclient.listener.MessageListener;
 import com.bx.imcommon.enums.IMListenerType;
 import com.bx.imcommon.enums.IMSendCode;
 import com.bx.imcommon.model.IMSendResult;
-import com.bx.api.entity.PrivateMessage;
-import com.bx.api.enums.MessageStatus;
+import com.bx.api.domain.entity.PrivateMessage;
+import com.bx.api.common.enums.MessageStatus;
 import com.bx.api.mapper.PrivateMessageMapper;
 import com.bx.api.bean.service.PrivateMessageService;
-import com.bx.api.vo.PrivateMessageVO;
+import com.bx.api.domain.vo.PrivateMessageVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,15 +1,15 @@
 package com.bx.api.bean.controller;
 
-import com.bx.api.entity.User;
-import com.bx.api.result.Result;
-import com.bx.api.result.ResultUtils;
+import com.bx.api.domain.entity.User;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.UserService;
 ;
 import com.bx.api.bean.service.SessionService;
-import com.bx.api.session.UserSession;
+import com.bx.api.domain.dto.session.UserSession;
 import com.bx.api.common.util.BeanUtils;
-import com.bx.api.vo.OnlineTerminalVO;
-import com.bx.api.vo.UserVO;
+import com.bx.api.domain.vo.OnlineTerminalVO;
+import com.bx.api.domain.vo.UserVO;
 import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

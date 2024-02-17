@@ -1,8 +1,8 @@
 package com.bx.api.bean.controller;
 
 import com.bx.api.config.ICEServer;
-import com.bx.api.result.Result;
-import com.bx.api.result.ResultUtils;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.WebrtcService;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;

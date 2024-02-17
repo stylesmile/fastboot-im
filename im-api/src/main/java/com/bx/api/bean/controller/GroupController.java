@@ -1,11 +1,11 @@
 package com.bx.api.bean.controller;
 
-import com.bx.api.result.Result;
-import com.bx.api.result.ResultUtils;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.GroupServiceImpl;
-import com.bx.api.vo.GroupInviteVO;
-import com.bx.api.vo.GroupMemberVO;
-import com.bx.api.vo.GroupVO;
+import com.bx.api.domain.vo.GroupInviteVO;
+import com.bx.api.domain.vo.GroupMemberVO;
+import com.bx.api.domain.vo.GroupVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
 import io.github.stylesmile.annotation.RequestMapping;

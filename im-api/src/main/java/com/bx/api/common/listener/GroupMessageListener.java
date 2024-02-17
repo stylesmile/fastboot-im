@@ -5,7 +5,7 @@ import com.bx.imclient.listener.MessageListener;
 import com.bx.imcommon.enums.IMListenerType;
 import com.bx.imcommon.enums.IMSendCode;
 import com.bx.imcommon.model.IMSendResult;
-import com.bx.api.vo.GroupMessageVO;
+import com.bx.api.domain.vo.GroupMessageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.AllArgsConstructor;

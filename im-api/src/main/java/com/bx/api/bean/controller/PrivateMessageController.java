@@ -1,10 +1,10 @@
 package com.bx.api.bean.controller;
 
-import com.bx.api.dto.PrivateMessageDTO;
-import com.bx.api.result.Result;
-import com.bx.api.result.ResultUtils;
+import com.bx.api.domain.dto.PrivateMessageDTO;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.PrivateMessageService;
-import com.bx.api.vo.PrivateMessageVO;
+import com.bx.api.domain.vo.PrivateMessageVO;
 import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

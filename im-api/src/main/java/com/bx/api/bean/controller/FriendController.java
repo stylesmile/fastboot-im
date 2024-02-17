@@ -1,9 +1,9 @@
 package com.bx.api.bean.controller;
 
 import com.bx.api.bean.service.FriendService;
-import com.bx.api.entity.Friend;
-import com.bx.api.result.Result;
-import com.bx.api.result.ResultUtils;
+import com.bx.api.domain.entity.Friend;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.SessionService;
 import com.bx.api.vo.FriendVO;
 import io.github.stylesmile.annotation.*;
