@@ -4,22 +4,22 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.bx.imclient.IMClient;
-import com.bx.imcommon.contant.IMConstant;
-import com.bx.imcommon.model.IMPrivateMessage;
-import com.bx.imcommon.model.IMUserInfo;
-import com.bx.api.common.util.BeanUtils;
-import com.bx.api.common.util.SensitiveFilterUtil;
-import com.bx.api.domain.dto.PrivateMessageDTO;
-import com.bx.api.domain.entity.Friend;
-import com.bx.api.domain.entity.PrivateMessage;
 import com.bx.api.common.enums.MessageStatus;
 import com.bx.api.common.enums.MessageType;
 import com.bx.api.common.enums.ResultCode;
 import com.bx.api.common.exception.GlobalException;
-import com.bx.api.mapper.PrivateMessageMapper;
+import com.bx.api.common.util.BeanUtils;
+import com.bx.api.common.util.SensitiveFilterUtil;
+import com.bx.api.domain.dto.PrivateMessageDTO;
 import com.bx.api.domain.dto.session.UserSession;
+import com.bx.api.domain.entity.Friend;
+import com.bx.api.domain.entity.PrivateMessage;
 import com.bx.api.domain.vo.PrivateMessageVO;
+import com.bx.api.mapper.PrivateMessageMapper;
+import com.bx.imclient.IMClient;
+import com.bx.imcommon.contant.IMConstant;
+import com.bx.imcommon.model.IMPrivateMessage;
+import com.bx.imcommon.model.IMUserInfo;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +47,8 @@ public class PrivateMessageService {
     @AutoWired
     private SessionService sessionService;
 
-    //@Override
     public Long sendMessage(PrivateMessageDTO dto) {
         UserSession session = sessionService.getSession();
-        ;
         Boolean isFriends = friendService.isFriend(session.getUserId(), dto.getRecvId());
         if (Boolean.FALSE.equals(isFriends)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "您已不是对方好友，无法发送消息");
@@ -78,7 +76,6 @@ public class PrivateMessageService {
         return msg.getId();
     }
 
-    //@Override
     public void recallMessage(Long id) {
         UserSession session = sessionService.getSession();
         ;
@@ -119,8 +116,6 @@ public class PrivateMessageService {
         log.info("撤回私聊消息，发送id:{},接收id:{}，内容:{}", msg.getSendId(), msg.getRecvId(), msg.getContent());
     }
 
-
-    //@Override
     public List<PrivateMessageVO> findHistoryMessage(Long friendId, Long page, Long size) {
         page = page > 0 ? page : 1;
         size = size > 0 ? size : 10;
@@ -142,8 +137,6 @@ public class PrivateMessageService {
         return messageInfos;
     }
 
-
-    //@Override
     public List<PrivateMessageVO> loadMessage(Long minId) {
         UserSession session = sessionService.getSession();
         ;
@@ -188,7 +181,7 @@ public class PrivateMessageService {
 
 
     //    @Transactional(rollbackFor = Exception.class)
-    //@Override
+
     public void readedMessage(Long friendId) {
         UserSession session = sessionService.getSession();
         ;
@@ -217,7 +210,6 @@ public class PrivateMessageService {
     }
 
 
-    //@Override
     public Long getMaxReadedId(Long friendId) {
         UserSession session = sessionService.getSession();
         ;
