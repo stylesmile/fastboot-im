@@ -1,4 +1,4 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -21,10 +21,11 @@ import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMessageMapper;
-import com.bx.implatform.session.SessionContext;
+;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
-import com.bx.implatform.util.BeanUtils;
-import com.bx.implatform.util.SensitiveFilterUtil;
+import com.bx.implatform.common.util.BeanUtils;
+import com.bx.implatform.common.util.SensitiveFilterUtil;
 import com.bx.implatform.vo.GroupMessageVO;
 import com.google.common.base.Splitter;
 import io.github.stylesmile.annotation.AutoWired;
@@ -42,11 +43,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 //public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, GroupMessage> implements IGroupMessageService {
-public class GroupMessageServiceImpl {
+public class GroupMessageService {
     @AutoWired
     private GroupServiceImpl groupService;
     @AutoWired
-    private GroupMemberServiceImpl groupMemberService;
+    private GroupMemberService groupMemberService;
     @AutoWired
     private JedisTemplate jedisTemplate;
     @AutoWired
@@ -55,10 +56,11 @@ public class GroupMessageServiceImpl {
     private SensitiveFilterUtil sensitiveFilterUtil;
     @AutoWired
     private GroupMessageMapper groupMessageMapper;
-
+    @AutoWired
+    private SessionService sessionService;
 //    @Override
     public Long sendMessage(GroupMessageDTO dto) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
         Group group = groupService.getById(dto.getGroupId());
         if (Objects.isNull(group)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "群聊不存在");
@@ -103,7 +105,7 @@ public class GroupMessageServiceImpl {
 
 //    @Override
     public void recallMessage(Long id) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
 //        GroupMessage msg = this.getById(id);
         GroupMessage msg = groupMessageMapper.selectById(id);
         if (Objects.isNull(msg)) {
@@ -154,7 +156,7 @@ public class GroupMessageServiceImpl {
 
 //    @Override
     public List<GroupMessageVO> loadMessage(Long minId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         List<GroupMember> members = groupMemberService.findByUserId(session.getUserId());
         if (CollectionUtil.isEmpty(members)) {
             return new ArrayList<>();
@@ -214,7 +216,7 @@ public class GroupMessageServiceImpl {
 
 //    @Override
     public void readedMessage(Long groupId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 取出最后的消息id
         LambdaQueryWrapper<GroupMessage> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(GroupMessage::getGroupId, groupId).orderByDesc(GroupMessage::getId).last("limit 1").select(GroupMessage::getId);
@@ -246,7 +248,7 @@ public class GroupMessageServiceImpl {
     public List<GroupMessageVO> findHistoryMessage(Long groupId, Long page, Long size) {
         page = page > 0 ? page : 1;
         size = size > 0 ? size : 10;
-        Long userId = SessionContext.getSession().getUserId();
+        Long userId = sessionService.getSession().getUserId();
         long stIdx = (page - 1) * size;
         // 群聊成员信息
         GroupMember member = groupMemberService.findByGroupAndUserId(groupId, userId);

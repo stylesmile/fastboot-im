@@ -1,4 +1,4 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_GROUP_MEMBER_ID)
 //public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, GroupMember> implements IGroupMemberService {
-public class GroupMemberServiceImpl {
+public class GroupMemberService {
     @AutoWired
     GroupMemberMapper groupMemberMapper;
 

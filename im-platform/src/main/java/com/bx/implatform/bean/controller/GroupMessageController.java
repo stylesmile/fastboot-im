@@ -1,9 +1,9 @@
 package com.bx.implatform.bean.controller;
 
+import com.bx.implatform.bean.service.GroupMessageService;
 import com.bx.implatform.dto.GroupMessageDTO;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.impl.GroupMessageServiceImpl;
 import com.bx.implatform.vo.GroupMessageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
@@ -21,7 +21,7 @@ import java.util.List;
 public class GroupMessageController {
     @AutoWired
 
-    private GroupMessageServiceImpl groupMessageService;
+    private GroupMessageService groupMessageService;
 
     //    @PostMapping("/message/group/send")
     @RequestMapping("/message/group/send")

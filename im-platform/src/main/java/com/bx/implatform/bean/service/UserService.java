@@ -1,4 +1,4 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -8,6 +8,8 @@ import com.bx.imclient.IMClient;
 import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.util.IPUtil;
 import com.bx.imcommon.util.JwtUtil;
+import com.bx.implatform.common.util.BeanUtils;
+import com.bx.implatform.common.util.MD5Util;
 import com.bx.implatform.config.JwtProperties;
 import com.bx.implatform.dto.LoginDTO;
 import com.bx.implatform.dto.ModifyPwdDTO;
@@ -20,10 +22,8 @@ import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.FriendMapper;
 import com.bx.implatform.mapper.GroupMemberMapper;
 import com.bx.implatform.mapper.UserMapper;
-import com.bx.implatform.session.SessionContext;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
-import com.bx.implatform.util.BeanUtils;
-import com.bx.implatform.util.MD5Util;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.OnlineTerminalVO;
 import com.bx.implatform.vo.UserVO;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 //public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
-public class UserServiceImpl {
+public class UserService {
 
     //    private final PasswordEncoder passwordEncoder;
     @AutoWired
@@ -55,9 +55,11 @@ public class UserServiceImpl {
     private GroupMemberMapper groupMemberMapper;
 
     @AutoWired
-    private GroupMemberServiceImpl groupMemberService;
+    private GroupMemberService groupMemberService;
     @AutoWired
     private JedisTemplate jedisTemplate;
+    @AutoWired
+    private SessionService sessionService;
 
     //@Override
     public LoginVO login(LoginDTO dto, Request request) {
@@ -76,6 +78,9 @@ public class UserServiceImpl {
 
         String strJson = JSON.toJSONString(session);
         String token = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
+        jedisTemplate.setex(
+                String.format("user:user_info_%s", token),
+                user.toString(), 600);
         jedisTemplate.setSerializeDataEx(
                 String.format("user:user_info_%s", token),
                 user, 600);
@@ -127,7 +132,8 @@ public class UserServiceImpl {
 
     //@Override
     public void modifyPassword(ModifyPwdDTO dto) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
 //        User user = this.getById(session.getUserId());
         User user = userMapper.selectById(session.getUserId());
         if (!MD5Util.calculateMD5(dto.getOldPassword()).equals(user.getPassword())) {
@@ -150,7 +156,8 @@ public class UserServiceImpl {
     //    @Transactional(rollbackFor = Exception.class)
     //@Override
     public void update(UserVO vo) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         if (!session.getUserId().equals(vo.getId())) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "不允许修改其他用户的信息!");
         }

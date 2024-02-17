@@ -1,4 +1,4 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,7 +10,7 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.FriendMapper;
 import com.bx.implatform.mapper.UserMapper;
-import com.bx.implatform.session.SessionContext;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.FriendVO;
 import io.github.stylesmile.annotation.AutoWired;
@@ -19,14 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
 @Slf4j
 @Service
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_FRIEND)
-public class FriendServiceImpl {
+public class FriendService {
 
     @AutoWired
     private UserMapper userMapper;
@@ -34,7 +33,10 @@ public class FriendServiceImpl {
     @AutoWired
     private FriendMapper friendMapper;
 
-//    @Override
+    @AutoWired
+    private SessionService sessionService;
+
+    //    @Override
     public List<Friend> findFriendByUserId(Long userId) {
         LambdaQueryWrapper<Friend> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Friend::getUserId, userId);
@@ -42,34 +44,34 @@ public class FriendServiceImpl {
     }
 
 
-//    @Transactional(rollbackFor = Exception.class)
+    //    @Transactional(rollbackFor = Exception.class)
 //    @Override
     public void addFriend(Long friendId) {
-        long userId = SessionContext.getSession().getUserId();
+        long userId = sessionService.getSession().getUserId();
         if (userId == friendId) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "不允许添加自己为好友");
         }
         // 互相绑定好友关系
-        FriendServiceImpl proxy = (FriendServiceImpl) AopContext.currentProxy();
+        FriendService proxy = (FriendService) AopContext.currentProxy();
         proxy.bindFriend(userId, friendId);
         proxy.bindFriend(friendId, userId);
         log.info("添加好友，用户id:{},好友id:{}", userId, friendId);
     }
 
 
-//    @Transactional(rollbackFor = Exception.class)
+    //    @Transactional(rollbackFor = Exception.class)
 //    @Override
     public void delFriend(Long friendId) {
-        long userId = SessionContext.getSession().getUserId();
+        long userId = sessionService.getSession().getUserId();
         // 互相解除好友关系，走代理清理缓存
-        FriendServiceImpl proxy = (FriendServiceImpl) AopContext.currentProxy();
+        FriendService proxy = (FriendService) AopContext.currentProxy();
         proxy.unbindFriend(userId, friendId);
         proxy.unbindFriend(friendId, userId);
         log.info("删除好友，用户id:{},好友id:{}", userId, friendId);
     }
 
 
-//    @Cacheable(key = "#userId1+':'+#userId2")
+    //    @Cacheable(key = "#userId1+':'+#userId2")
 //    @Override
     public Boolean isFriend(Long userId1, Long userId2) {
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
@@ -80,9 +82,9 @@ public class FriendServiceImpl {
     }
 
 
-//    @Override
+    //    @Override
     public void update(FriendVO vo) {
-        long userId = SessionContext.getSession().getUserId();
+        long userId = sessionService.getSession().getUserId();
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(Friend::getUserId, userId)
@@ -142,9 +144,10 @@ public class FriendServiceImpl {
     }
 
 
-//    @Override
+    //    @Override
     public FriendVO findFriend(Long friendId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        long userId = session.getUserId();
         QueryWrapper<Friend> wrapper = new QueryWrapper<>();
         wrapper.lambda()
                 .eq(Friend::getUserId, session.getUserId())

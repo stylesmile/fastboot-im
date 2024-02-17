@@ -1,4 +1,4 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,6 +8,8 @@ import com.bx.imclient.IMClient;
 import com.bx.imcommon.contant.IMConstant;
 import com.bx.imcommon.model.IMPrivateMessage;
 import com.bx.imcommon.model.IMUserInfo;
+import com.bx.implatform.common.util.BeanUtils;
+import com.bx.implatform.common.util.SensitiveFilterUtil;
 import com.bx.implatform.dto.PrivateMessageDTO;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.entity.PrivateMessage;
@@ -16,10 +18,8 @@ import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.PrivateMessageMapper;
-import com.bx.implatform.session.SessionContext;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
-import com.bx.implatform.util.BeanUtils;
-import com.bx.implatform.util.SensitiveFilterUtil;
 import com.bx.implatform.vo.PrivateMessageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
@@ -30,23 +30,28 @@ import org.apache.commons.lang3.time.DateUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PrivateMessageServiceImpl {
+public class PrivateMessageService {
     //public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper, PrivateMessage> implements IPrivateMessageService {
     @AutoWired
-    private FriendServiceImpl friendService;
+    private FriendService friendService;
     @AutoWired
     private IMClient imClient;
     @AutoWired
     private SensitiveFilterUtil sensitiveFilterUtil;
     @AutoWired
     private PrivateMessageMapper privateMessageMapper;
+    @AutoWired
+    private SessionService sessionService;
 
     //@Override
     public Long sendMessage(PrivateMessageDTO dto) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         Boolean isFriends = friendService.isFriend(session.getUserId(), dto.getRecvId());
         if (Boolean.FALSE.equals(isFriends)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "您已不是对方好友，无法发送消息");
@@ -76,7 +81,8 @@ public class PrivateMessageServiceImpl {
 
     //@Override
     public void recallMessage(Long id) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
 //        PrivateMessage msg = this.getById(id);
         PrivateMessage msg = privateMessageMapper.selectById(id);
         if (Objects.isNull(msg)) {
@@ -119,7 +125,7 @@ public class PrivateMessageServiceImpl {
     public List<PrivateMessageVO> findHistoryMessage(Long friendId, Long page, Long size) {
         page = page > 0 ? page : 1;
         size = size > 0 ? size : 10;
-        Long userId = SessionContext.getSession().getUserId();
+        Long userId = sessionService.getSession().getUserId();
         long stIdx = (page - 1) * size;
         QueryWrapper<PrivateMessage> wrapper = new QueryWrapper<>();
         wrapper.lambda().and(wrap -> wrap.and(
@@ -140,7 +146,8 @@ public class PrivateMessageServiceImpl {
 
     //@Override
     public List<PrivateMessageVO> loadMessage(Long minId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         List<Friend> friends = friendService.findFriendByUserId(session.getUserId());
         if (friends.isEmpty()) {
             return new ArrayList<>();
@@ -184,7 +191,8 @@ public class PrivateMessageServiceImpl {
     //    @Transactional(rollbackFor = Exception.class)
     //@Override
     public void readedMessage(Long friendId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         // 推送消息
         PrivateMessageVO msgInfo = new PrivateMessageVO();
         msgInfo.setType(MessageType.READED.code());
@@ -212,7 +220,8 @@ public class PrivateMessageServiceImpl {
 
     //@Override
     public Long getMaxReadedId(Long friendId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         LambdaQueryWrapper<PrivateMessage> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(PrivateMessage::getSendId, session.getUserId())
                 .eq(PrivateMessage::getRecvId, friendId)

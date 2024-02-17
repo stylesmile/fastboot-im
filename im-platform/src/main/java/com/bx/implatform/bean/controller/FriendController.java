@@ -1,10 +1,10 @@
 package com.bx.implatform.bean.controller;
 
+import com.bx.implatform.bean.service.FriendService;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.impl.FriendServiceImpl;
-import com.bx.implatform.session.SessionContext;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.vo.FriendVO;
 import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
@@ -20,13 +20,15 @@ import java.util.stream.Collectors;
 public class FriendController {
     @AutoWired
 //    private IFriendService friendService;
-    private FriendServiceImpl friendService;
+    private FriendService friendService;
+    @AutoWired
+    private SessionService sessionService;
 
     //    @GetMapping("/friend/list")
     @RequestMapping("/friend/list")
     @ApiOperation(value = "好友列表", notes = "获取好友列表")
     public Result<List<FriendVO>> findFriends() {
-        List<Friend> friends = friendService.findFriendByUserId(SessionContext.getSession().getUserId());
+        List<Friend> friends = friendService.findFriendByUserId(sessionService.getSession().getUserId());
         List<FriendVO> vos = friends.stream().map(f -> {
             FriendVO vo = new FriendVO();
             vo.setId(f.getFriendId());

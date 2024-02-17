@@ -2,7 +2,7 @@ package com.bx.implatform.bean.controller;
 
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.thirdparty.FileService;
+import com.bx.implatform.bean.service.FileService;
 import com.bx.implatform.vo.UploadImageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;

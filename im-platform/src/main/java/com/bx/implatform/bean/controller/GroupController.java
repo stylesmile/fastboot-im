@@ -2,7 +2,7 @@ package com.bx.implatform.bean.controller;
 
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.service.impl.GroupServiceImpl;
+import com.bx.implatform.bean.service.GroupServiceImpl;
 import com.bx.implatform.vo.GroupInviteVO;
 import com.bx.implatform.vo.GroupMemberVO;
 import com.bx.implatform.vo.GroupVO;

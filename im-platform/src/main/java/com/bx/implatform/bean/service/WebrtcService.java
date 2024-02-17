@@ -1,4 +1,4 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import com.bx.imclient.IMClient;
 import com.bx.imcommon.model.IMPrivateMessage;
@@ -8,7 +8,8 @@ import com.bx.implatform.config.ICEServerConfig;
 import com.bx.implatform.contant.RedisKey;
 import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.exception.GlobalException;
-import com.bx.implatform.session.SessionContext;
+;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.session.WebrtcSession;
 import com.bx.implatform.vo.PrivateMessageVO;
@@ -22,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class WebrtcServiceImpl {
+public class WebrtcService {
 
     @AutoWired
     private IMClient imClient;
@@ -30,10 +31,11 @@ public class WebrtcServiceImpl {
     private JedisTemplate jedisTemplate;
     @AutoWired
     private ICEServerConfig iceServerConfig;
-
+    @AutoWired
+    private SessionService sessionService;
 //    //@Override
     public void call(Long uid, String offer) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         if (!imClient.isOnline(uid)) {
             throw new GlobalException("对方目前不在线");
         }
@@ -64,7 +66,7 @@ public class WebrtcServiceImpl {
 
 //    //@Override
     public void accept(Long uid, String answer) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 查询webrtc会话
         WebrtcSession webrtcSession = getWebrtcSession(session.getUserId(), uid);
         // 更新接受者信息
@@ -93,7 +95,7 @@ public class WebrtcServiceImpl {
 
 //    //@Override
     public void reject(Long uid) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 查询webrtc会话
         WebrtcSession webrtcSession = getWebrtcSession(session.getUserId(), uid);
         // 删除会话信息
@@ -117,7 +119,7 @@ public class WebrtcServiceImpl {
 
 //    //@Override
     public void cancel(Long uid) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 删除会话信息
         removeWebrtcSession(session.getUserId(), uid);
         // 向对方所有终端推送取消通话信令
@@ -138,7 +140,7 @@ public class WebrtcServiceImpl {
 
     //@Override
     public void failed(Long uid, String reason) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 查询webrtc会话
         WebrtcSession webrtcSession = getWebrtcSession(session.getUserId(), uid);
         // 删除会话信息
@@ -164,7 +166,7 @@ public class WebrtcServiceImpl {
 
     //@Override
     public void leave(Long uid) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 查询webrtc会话
         WebrtcSession webrtcSession = getWebrtcSession(session.getUserId(), uid);
         // 删除会话信息
@@ -189,7 +191,7 @@ public class WebrtcServiceImpl {
 
     //@Override
     public void candidate(Long uid, String candidate) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();;
         // 查询webrtc会话
         WebrtcSession webrtcSession = getWebrtcSession(session.getUserId(), uid);
         // 向发起方推送同步candidate信令
@@ -218,7 +220,7 @@ public class WebrtcServiceImpl {
     private WebrtcSession getWebrtcSession(Long userId, Long uid) {
         String key = getSessionKey(userId, uid);
 //        WebrtcSession webrtcSession = (WebrtcSession) redisTemplate.opsForValue().get(key);
-        WebrtcSession webrtcSession = jedisTemplate.getSerializeData(key, WebrtcServiceImpl.class);
+        WebrtcSession webrtcSession = jedisTemplate.getSerializeData(key, WebrtcService.class);
         if (webrtcSession == null) {
             throw new GlobalException("视频通话已结束");
         }

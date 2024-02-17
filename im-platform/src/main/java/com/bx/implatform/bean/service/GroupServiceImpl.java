@@ -1,8 +1,9 @@
-package com.bx.implatform.service.impl;
+package com.bx.implatform.bean.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bx.imclient.IMClient;
+import com.bx.implatform.common.util.BeanUtils;
 import com.bx.implatform.contant.Constant;
 import com.bx.implatform.contant.RedisKey;
 import com.bx.implatform.entity.Friend;
@@ -13,9 +14,8 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMapper;
 import com.bx.implatform.mapper.GroupMemberMapper;
-import com.bx.implatform.session.SessionContext;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
-import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.vo.GroupInviteVO;
 import com.bx.implatform.vo.GroupMemberVO;
 import com.bx.implatform.vo.GroupVO;
@@ -36,22 +36,24 @@ import java.util.stream.Collectors;
 //public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
 public class GroupServiceImpl {
     @AutoWired
-    private UserServiceImpl userService;
+    private UserService userService;
     @AutoWired
-    private GroupMemberServiceImpl groupMemberService;
+    private GroupMemberService groupMemberService;
     @AutoWired
     private GroupMemberMapper groupMemberMapper;
     @AutoWired
-    private FriendServiceImpl friendsService;
+    private FriendService friendsService;
     @AutoWired
     private IMClient imClient;
 
     @AutoWired
     private GroupMapper groupMapper;
+    @AutoWired
+    private SessionService sessionService;
 
     //    //@Override
     public GroupVO createGroup(GroupVO vo) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
         User user = userService.getById(session.getUserId());
         // 保存群组数据
         Group group = BeanUtils.copyProperties(vo, Group.class);
@@ -78,7 +80,7 @@ public class GroupServiceImpl {
 //    @Transactional(rollbackFor = Exception.class)
 //    //@Override
     public GroupVO modifyGroup(GroupVO vo) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
         // 校验是不是群主，只有群主能改信息
         Group group = this.getById(vo.getId());
         // 群主有权修改群基本信息
@@ -104,7 +106,8 @@ public class GroupServiceImpl {
     @CacheEvict(value = "#groupId")
 //    //@Override
     public void deleteGroup(Long groupId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         Group group = this.getById(groupId);
         if (!group.getOwnerId().equals(session.getUserId())) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "只有群主才有权限解除群聊");
@@ -120,7 +123,7 @@ public class GroupServiceImpl {
 
     //@Override
     public void quitGroup(Long groupId) {
-        Long userId = SessionContext.getSession().getUserId();
+        Long userId = sessionService.getSession().getUserId();
         Group group = this.getById(groupId);
         if (group.getOwnerId().equals(userId)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "您是群主，不可退出群聊");
@@ -132,7 +135,8 @@ public class GroupServiceImpl {
 
     //@Override
     public void kickGroup(Long groupId, Long userId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         Group group = this.getById(groupId);
         if (!group.getOwnerId().equals(session.getUserId())) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "您不是群主，没有权限踢人");
@@ -147,7 +151,8 @@ public class GroupServiceImpl {
 
     //@Override
     public GroupVO findById(Long groupId) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         Group group = this.getById(groupId);
         GroupMember member = groupMemberService.findByGroupAndUserId(groupId, session.getUserId());
         if (member == null) {
@@ -175,7 +180,8 @@ public class GroupServiceImpl {
 
     //@Override
     public List<GroupVO> findGroups() {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         // 查询当前用户的群id列表
         List<GroupMember> groupMembers = groupMemberService.findByUserId(session.getUserId());
         if (groupMembers.isEmpty()) {
@@ -199,7 +205,8 @@ public class GroupServiceImpl {
 
     //@Override
     public void invite(GroupInviteVO vo) {
-        UserSession session = SessionContext.getSession();
+        UserSession session = sessionService.getSession();
+        ;
         Group group = this.getById(vo.getGroupId());
         if (group == null) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "群聊不存在");

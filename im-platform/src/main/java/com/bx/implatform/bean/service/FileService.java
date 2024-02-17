@@ -1,13 +1,13 @@
-package com.bx.implatform.service.thirdparty;
+package com.bx.implatform.bean.service;
 
 import com.bx.implatform.contant.Constant;
 import com.bx.implatform.enums.FileType;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
-import com.bx.implatform.session.SessionContext;
-import com.bx.implatform.util.FileUtil;
-import com.bx.implatform.util.ImageUtil;
-import com.bx.implatform.util.MinioUtil;
+import com.bx.implatform.common.util.FileUtil;
+import com.bx.implatform.common.util.ImageUtil;
+import com.bx.implatform.common.util.MinioUtil;
+import com.bx.implatform.session.SessionService;
 import com.bx.implatform.vo.UploadImageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
@@ -44,7 +44,8 @@ public class FileService {
     @Value("${minio.videoPath}")
     private String videoPath;
 
-
+    @AutoWired
+    private SessionService sessionService;
     @PostConstruct
     public void init() {
         if (!minioUtil.bucketExists(bucketName)) {
@@ -57,7 +58,8 @@ public class FileService {
 
 
     public String uploadFile(UploadedFile file) {
-        Long userId = SessionContext.getSession().getUserId();
+        long userId = sessionService.getSession().getUserId();
+
         // 大小校验
         if (file.getContentSize() > Constant.MAX_FILE_SIZE) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "文件大小不能超过10M");
@@ -74,7 +76,7 @@ public class FileService {
 
     public UploadImageVO uploadImage(UploadedFile file) {
         try {
-            Long userId = SessionContext.getSession().getUserId();
+            Long userId = sessionService.getSession().getUserId();
             // 大小校验
             if (file.getContentSize() > Constant.MAX_IMAGE_SIZE) {
                 throw new GlobalException(ResultCode.PROGRAM_ERROR, "图片大小不能超过5M");
