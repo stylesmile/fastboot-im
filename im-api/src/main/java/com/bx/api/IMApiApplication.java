@@ -6,9 +6,9 @@ import io.github.stylesmile.app.App;
 // IMClient在子包中，需要添加
 
 @Fastboot(include = {IMClient.class})
-public class IMPlatformApplication {
+public class IMApiApplication {
 
     public static void main(String[] args) {
-        App.start(IMPlatformApplication.class, args);
+        App.start(IMApiApplication.class, args);
     }
 }
