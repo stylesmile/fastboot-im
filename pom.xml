@@ -148,9 +148,9 @@
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <!-- maven 官方仓库-->
-        <repository>
-            <id>maven1</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>maven1</id>-->
+<!--            <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>-->
+<!--        </repository>-->
     </repositories>
 </project>
