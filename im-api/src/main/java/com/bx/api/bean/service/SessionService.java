@@ -14,7 +14,7 @@ public class SessionService {
         return userSessionThreadLocal.get();
     }
 
-    public static void getSession(UserSession userSession) {
+    public static void setSession(UserSession userSession) {
         userSessionThreadLocal.set(userSession);
     }
 

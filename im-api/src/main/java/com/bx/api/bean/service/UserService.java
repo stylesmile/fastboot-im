@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.bx.api.common.contant.RedisKey;
 import com.bx.imclient.IMClient;
 import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.util.IPUtil;
@@ -77,11 +78,8 @@ public class UserService {
 
         String strJson = JSON.toJSONString(session);
         String token = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
-        jedisTemplate.setex(
-                String.format("user:user_info_%s", token),
-                user.toString(), 600);
         jedisTemplate.setSerializeDataEx(
-                String.format("user:user_info_%s", token),
+                String.format(RedisKey.Login.USER_SESSION, token),
                 user, 600);
 
 //        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
