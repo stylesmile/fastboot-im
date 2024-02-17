@@ -51,9 +51,11 @@ public class FriendService {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "不允许添加自己为好友");
         }
         // 互相绑定好友关系
-        FriendService proxy = (FriendService) AopContext.currentProxy();
-        proxy.bindFriend(userId, friendId);
-        proxy.bindFriend(friendId, userId);
+//        FriendService proxy = (FriendService) AopContext.currentProxy();
+//        proxy.bindFriend(userId, friendId);
+//        proxy.bindFriend(friendId, userId);
+        this.bindFriend(userId, friendId);
+        this.bindFriend(friendId, userId);
         log.info("添加好友，用户id:{},好友id:{}", userId, friendId);
     }
 
