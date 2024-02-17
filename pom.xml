@@ -10,10 +10,10 @@
     <version>2.0.0</version>
 
     <modules>
-        <module>im-platform</module>
-        <module>im-server</module>
         <module>im-commom</module>
         <module>im-client</module>
+        <module>im-api</module>
+        <module>im-server</module>
     </modules>
 
     <properties>
@@ -128,17 +128,6 @@
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.9.13</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>javax.interceptor</groupId>-->
-<!--                <artifactId>javax.interceptor-api</artifactId>-->
-<!--                <version>1.2</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.security</groupId>-->
-<!--                <artifactId>spring-security-jwt</artifactId>-->
-<!--                <version>1.0.10.RELEASE</version>-->
-<!--            </dependency>-->
-
         </dependencies>
 
     </dependencyManagement>
