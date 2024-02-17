@@ -4,7 +4,7 @@ import com.bx.implatform.bean.service.FriendService;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
-import com.bx.implatform.session.SessionService;
+import com.bx.implatform.bean.service.SessionService;
 import com.bx.implatform.vo.FriendVO;
 import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;

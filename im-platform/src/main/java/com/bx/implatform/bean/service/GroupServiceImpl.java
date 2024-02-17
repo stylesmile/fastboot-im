@@ -14,7 +14,6 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMapper;
 import com.bx.implatform.mapper.GroupMemberMapper;
-import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.GroupInviteVO;
 import com.bx.implatform.vo.GroupMemberVO;

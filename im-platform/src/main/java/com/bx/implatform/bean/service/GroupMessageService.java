@@ -22,7 +22,6 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.GroupMessageMapper;
 ;
-import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.common.util.BeanUtils;
 import com.bx.implatform.common.util.SensitiveFilterUtil;

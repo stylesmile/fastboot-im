@@ -22,7 +22,6 @@ import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.FriendMapper;
 import com.bx.implatform.mapper.GroupMemberMapper;
 import com.bx.implatform.mapper.UserMapper;
-import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.OnlineTerminalVO;

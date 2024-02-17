@@ -5,7 +5,7 @@ import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.bean.service.UserService;
 ;
-import com.bx.implatform.session.SessionService;
+import com.bx.implatform.bean.service.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.common.util.BeanUtils;
 import com.bx.implatform.vo.OnlineTerminalVO;

@@ -1,9 +1,13 @@
-package com.bx.implatform.session;
+package com.bx.implatform.bean.service;
+
+import com.bx.implatform.session.UserSession;
+import io.github.stylesmile.annotation.Service;
 
 /*
  * @Author Stylesmile
  */
-public class SessionContext {
+@Service
+public class SessionService {
     public static ThreadLocal<UserSession> userSessionThreadLocal = new ThreadLocal<>();
 
     public static UserSession getSession() {

@@ -7,7 +7,6 @@ import com.bx.imclient.annotation.IMListener;
 import com.bx.imcommon.enums.IMListenerType;
 import com.bx.imcommon.model.IMSendResult;
 import io.github.stylesmile.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

@@ -10,7 +10,6 @@ import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.FriendMapper;
 import com.bx.implatform.mapper.UserMapper;
-import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.FriendVO;
 import io.github.stylesmile.annotation.AutoWired;

@@ -18,7 +18,6 @@ import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.enums.ResultCode;
 import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.PrivateMessageMapper;
-import com.bx.implatform.session.SessionService;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.PrivateMessageVO;
 import io.github.stylesmile.annotation.AutoWired;

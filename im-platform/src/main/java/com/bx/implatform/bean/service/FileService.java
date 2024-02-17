@@ -7,7 +7,6 @@ import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.common.util.FileUtil;
 import com.bx.implatform.common.util.ImageUtil;
 import com.bx.implatform.common.util.MinioUtil;
-import com.bx.implatform.session.SessionService;
 import com.bx.implatform.vo.UploadImageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
