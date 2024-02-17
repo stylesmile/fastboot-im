@@ -72,15 +72,18 @@ public class UserService {
             throw new GlobalException(ResultCode.PASSWOR_ERROR);
         }
         // 生成token
-        UserSession session = BeanUtils.copyProperties(user, UserSession.class);
-        session.setUserId(user.getId());
+//        UserSession session = BeanUtils.copyProperties(user, UserSession.class);
+        UserSession session = UserSession.builder()
+                .nickName(user.getNickName())
+                .userName(user.getUserName())
+                .build();
         session.setTerminal(dto.getTerminal());
-
+        session.setUserId(user.getId());
         String strJson = JSON.toJSONString(session);
         String accessToken = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
         jedisTemplate.setSerializeDataEx(
                 String.format(RedisKey.Login.USER_SESSION, accessToken),
-                user, 600);
+                session, 600);
 
 //        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
 //        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
