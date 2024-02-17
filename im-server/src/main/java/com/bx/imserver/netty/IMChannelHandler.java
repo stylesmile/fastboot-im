@@ -6,14 +6,14 @@ import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imserver.constant.ChannelAttrKey;
 import com.bx.imserver.netty.processor.AbstractMessageProcessor;
 import com.bx.imserver.netty.processor.ProcessorFactory;
-import com.bx.imserver.util.SpringContextHolder;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * WebSocket 长连接下 文本帧的处理器
@@ -23,6 +23,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Slf4j
 public class IMChannelHandler extends SimpleChannelInboundHandler<IMSendInfo> {
 
+    @AutoWired
+    JedisTemplate jedisTemplate;
     /**
      * 读取到消息后进行处理
      *
@@ -33,6 +35,7 @@ public class IMChannelHandler extends SimpleChannelInboundHandler<IMSendInfo> {
     protected void channelRead0(ChannelHandlerContext ctx, IMSendInfo sendInfo) {
         // 创建处理器进行处理
         AbstractMessageProcessor processor = ProcessorFactory.createProcessor(IMCmdType.fromCode(sendInfo.getCmd()));
+
         processor.process(ctx, processor.transForm(sendInfo.getData()));
     }
 
@@ -71,9 +74,11 @@ public class IMChannelHandler extends SimpleChannelInboundHandler<IMSendInfo> {
             // 移除channel
             UserChannelCtxMap.removeChannelCtx(userId, terminal);
             // 用户下线
-            RedisTemplate<String, Object> redisTemplate = SpringContextHolder.getBean("redisTemplate");
+
+//            RedisTemplate<String, Object> redisTemplate = SpringContextHolder.getBean("redisTemplate");
             String key = String.join(":", IMRedisKey.IM_USER_SERVER_ID, userId.toString(), terminal.toString());
-            redisTemplate.delete(key);
+//            redisTemplate.delete(key);
+            jedisTemplate.delete(key);
             log.info("断开连接,userId:{},终端类型:{}", userId, terminal);
         }
     }

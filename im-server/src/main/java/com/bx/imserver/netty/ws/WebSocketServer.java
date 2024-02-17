@@ -4,6 +4,7 @@ import com.bx.imserver.netty.IMChannelHandler;
 import com.bx.imserver.netty.IMServer;
 import com.bx.imserver.netty.ws.endecode.MessageProtocolDecoder;
 import com.bx.imserver.netty.ws.endecode.MessageProtocolEncoder;
+import io.github.stylesmile.annotation.Service;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -15,8 +16,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,8 +26,8 @@ import java.util.concurrent.TimeUnit;
  * @date 2022-11-20
  */
 @Slf4j
-@Component
-@ConditionalOnProperty(prefix = "websocket", value = "enable", havingValue = "true", matchIfMissing = true)
+@Service
+//@ConditionalOnProperty(prefix = "websocket", value = "enable", havingValue = "true", matchIfMissing = true)
 public class WebSocketServer implements IMServer {
 
     @Value("${websocket.port}")

@@ -1,25 +1,29 @@
 package com.bx.imserver.netty;
 
 import com.bx.imcommon.contant.IMRedisKey;
-import lombok.AllArgsConstructor;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 import java.util.List;
 
 @Slf4j
-@Component
-@AllArgsConstructor
-public class IMServerGroup implements CommandLineRunner {
+@Service
+public class IMServerGroup {
 
     public static volatile long serverId = 0;
 
-    RedisTemplate<String, Object> redisTemplate;
+    //    RedisTemplate<String, Object> redisTemplate;
+    @AutoWired
+    JedisTemplate jedisTemplate;
 
-    private final List<IMServer> imServers;
+    private final List<IMServer> imServers ;
+
+    public IMServerGroup(List<IMServer> imServers) {
+        this.imServers = imServers;
+    }
 
     /***
      * 判断服务器是否就绪
@@ -35,11 +39,11 @@ public class IMServerGroup implements CommandLineRunner {
         return true;
     }
 
-    @Override
     public void run(String... args) throws Exception {
         // 初始化SERVER_ID
         String key = IMRedisKey.IM_MAX_SERVER_ID;
-        serverId = redisTemplate.opsForValue().increment(key, 1);
+//        serverId = redisTemplate.opsForValue().increment(key, 1);
+        serverId = jedisTemplate.incrLongData(key, 1);
         // 启动服务
         for (IMServer imServer : imServers) {
             imServer.start();

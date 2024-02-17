@@ -2,23 +2,25 @@ package com.bx.imserver.task;
 
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import com.bx.imserver.netty.IMServerGroup;
+import io.github.stylesmile.annotation.Service;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 
 @Slf4j
-public abstract class AbstractPullMessageTask implements CommandLineRunner {
+@Service
+public abstract class AbstractPullMessageTask {
 
     private static final ExecutorService EXECUTOR_SERVICE = ThreadPoolExecutorFactory.getThreadPoolExecutor();
 
     @Autowired
     private IMServerGroup serverGroup;
 
-    @Override
+    @PostConstruct
     public void run(String... args) {
         EXECUTOR_SERVICE.execute(new Runnable() {
             @SneakyThrows
