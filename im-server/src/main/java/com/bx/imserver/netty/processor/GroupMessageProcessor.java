@@ -9,21 +9,20 @@ import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imcommon.model.IMSendResult;
 import com.bx.imcommon.model.IMUserInfo;
 import com.bx.imserver.netty.UserChannelCtxMap;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@Service
 public class GroupMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> {
-
-    private final RedisTemplate<String, Object> redisTemplate;
+    @AutoWired
+    private  JedisTemplate redisTemplate;
 
     @Override
     public void process(IMRecvInfo recvInfo) {
@@ -65,7 +64,8 @@ public class GroupMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> 
             result.setData(recvInfo.getData());
             // 推送到结果队列
             String key = StrUtil.join(":",IMRedisKey.IM_RESULT_GROUP_QUEUE,recvInfo.getServiceName());
-            redisTemplate.opsForList().rightPush(key, result);
+//            redisTemplate.opsForList().rightPush(key, result);
+            redisTemplate.rpush(key, result);
         }
     }
 }
