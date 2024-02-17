@@ -13,11 +13,6 @@
 
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>com.baomidou</groupId>-->
-<!--            <artifactId>mybatis-plus</artifactId>-->
-<!--            <version>3.1.0</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -30,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>io.github.stylesmile</groupId>
-            <artifactId>fastboot-mybatis</artifactId>
+            <artifactId>fastboot-mybatis-plus</artifactId>
         </dependency>
         <dependency>
             <groupId>com.bx</groupId>
@@ -97,17 +92,23 @@
             <artifactId>spring-boot-starter-validation</artifactId>
 <!--            <version>2.7.18</version>-->
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.14</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>1.4.14</version>-->
+<!--        </dependency>-->
         <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
+<!--            <version>2.0.12</version>-->
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-slf4j2-impl</artifactId>-->
+<!--            <version>2.22.1</version>-->
+<!--        </dependency>-->
         <!--minio-->
         <dependency>
             <groupId>io.minio</groupId>
