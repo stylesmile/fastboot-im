@@ -2,6 +2,9 @@ package com.bx.api.bean.filter;
 
 import com.bx.api.bean.service.SessionService;
 import com.bx.api.common.contant.RedisKey;
+import com.bx.api.common.enums.ResultCode;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.domain.dto.session.UserSession;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
@@ -9,6 +12,7 @@ import io.github.stylesmile.filter.Filter;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.server.Request;
 import io.github.stylesmile.server.Response;
+import io.github.stylesmile.tool.ResultUtil;
 import io.github.stylesmile.tool.StringUtil;
 
 import java.util.HashMap;
@@ -37,6 +41,9 @@ public class TokenFilter implements Filter {
             SessionService.setSession(userSession);
             return true;
         }
+        Result result = ResultUtils.error(ResultCode.NO_LOGIN.getCode(), ResultCode.NO_LOGIN.getMsg());
+        ResultUtil.sendJson(response, 200, result);
+//        return ;
         return false;
     }
 
