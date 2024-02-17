@@ -8,12 +8,11 @@ import com.bx.imcommon.enums.IMListenerType;
 import com.bx.imcommon.model.IMSendResult;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.ioc.Value;
 import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
-import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -23,15 +22,15 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PrivateMessageResultResultTask extends AbstractMessageResultTask {
 
-//    @Resource(name = "IMRedisTemplate")
+    //    @Resource(name = "IMRedisTemplate")
 //    private RedisTemplate<String, Object> redisTemplate;
     @AutoWired
     JedisTemplate jedisTemplate;
 
-    @Value("${spring.application.name}")
+    @Value("fast.name")
     private String appName;
 
-    @Value("${im.result.batch:100}")
+    @Value("im.result.batch:100")
     private int batchSize;
 
     private final MessageListenerMulticaster listenerMulticaster;
@@ -41,7 +40,7 @@ public class PrivateMessageResultResultTask extends AbstractMessageResultTask {
         List<IMSendResult> results;
         do {
             results = loadBatch();
-            if(!results.isEmpty()){
+            if (!results.isEmpty()) {
                 listenerMulticaster.multicast(IMListenerType.PRIVATE_MESSAGE, results);
             }
         } while (results.size() >= batchSize);
@@ -53,12 +52,12 @@ public class PrivateMessageResultResultTask extends AbstractMessageResultTask {
         //List<Object> list = redisTemplate.opsForList().leftPop(key, batchSize);
         List<IMSendResult> results = new LinkedList<>();
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-        JSONObject jsonObject =  jedisTemplate.getSerializeData(key, JSONObject.class);
+        JSONObject jsonObject = jedisTemplate.getSerializeData(key, JSONObject.class);
 
         while (!Objects.isNull(jsonObject) && results.size() < batchSize) {
             results.add(jsonObject.toJavaObject(IMSendResult.class));
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            jsonObject = jedisTemplate.getSerializeData(key,JSONObject.class);
+            jsonObject = jedisTemplate.getSerializeData(key, JSONObject.class);
 
         }
         return results;
