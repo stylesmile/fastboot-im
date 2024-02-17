@@ -1,4 +1,4 @@
-package com.bx.implatform.util;
+package com.bx.implatform.common.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;

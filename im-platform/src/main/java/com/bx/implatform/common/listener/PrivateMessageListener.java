@@ -1,4 +1,4 @@
-package com.bx.implatform.listener;
+package com.bx.implatform.common.listener;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;

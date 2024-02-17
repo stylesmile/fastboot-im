@@ -1,4 +1,4 @@
-package com.bx.implatform.util;
+package com.bx.implatform.common.util;
 
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.file.UploadedFile;

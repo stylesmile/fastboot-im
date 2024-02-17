@@ -1,4 +1,4 @@
-package com.bx.implatform.util;
+package com.bx.implatform.common.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

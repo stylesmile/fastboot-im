@@ -1,4 +1,4 @@
-package com.bx.implatform.util;
+package com.bx.implatform.common.util;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

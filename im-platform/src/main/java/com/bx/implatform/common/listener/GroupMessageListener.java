@@ -1,4 +1,4 @@
-package com.bx.implatform.listener;
+package com.bx.implatform.common.listener;
 
 import com.bx.imclient.annotation.IMListener;
 import com.bx.imclient.listener.MessageListener;
