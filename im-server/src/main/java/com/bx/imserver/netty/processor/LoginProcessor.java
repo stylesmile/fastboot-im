@@ -12,6 +12,7 @@ import com.bx.imcommon.util.JwtUtil;
 import com.bx.imserver.constant.ChannelAttrKey;
 import com.bx.imserver.netty.IMServerGroup;
 import com.bx.imserver.netty.UserChannelCtxMap;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class LoginProcessor extends AbstractMessageProcessor<IMLoginInfo> {
 
-    private final JedisTemplate redisTemplate;
+    @AutoWired
+    private  JedisTemplate redisTemplate;
 
     @Value("${jwt.accessToken.secret}")
     private String accessTokenSecret;

@@ -7,6 +7,7 @@ import com.bx.imcommon.model.IMRecvInfo;
 import com.bx.imserver.netty.IMServerGroup;
 import com.bx.imserver.netty.processor.AbstractMessageProcessor;
 import com.bx.imserver.netty.processor.ProcessorFactory;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,10 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class PullGroupMessageTask extends AbstractPullMessageTask {
 
-    private final JedisTemplate redisTemplate;
+    @AutoWired
+    private JedisTemplate redisTemplate;
 
     @Override
     public void pullMessage() {

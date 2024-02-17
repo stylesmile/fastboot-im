@@ -13,7 +13,6 @@ import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.List;
 @Service
 public class GroupMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> {
     @AutoWired
-    private  JedisTemplate redisTemplate;
+    private JedisTemplate redisTemplate;
 
     @Override
     public void process(IMRecvInfo recvInfo) {
@@ -63,7 +62,7 @@ public class GroupMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> 
             result.setCode(sendCode.code());
             result.setData(recvInfo.getData());
             // 推送到结果队列
-            String key = StrUtil.join(":",IMRedisKey.IM_RESULT_GROUP_QUEUE,recvInfo.getServiceName());
+            String key = StrUtil.join(":", IMRedisKey.IM_RESULT_GROUP_QUEUE, recvInfo.getServiceName());
 //            redisTemplate.opsForList().rightPush(key, result);
             redisTemplate.rpush(key, result);
         }

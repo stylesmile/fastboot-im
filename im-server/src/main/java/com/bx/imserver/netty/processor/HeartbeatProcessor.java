@@ -15,11 +15,11 @@ import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class HeartbeatProcessor extends AbstractMessageProcessor<IMHeartbeatInfo> {
+//public class HeartbeatProcessor {
 
     @AutoWired
     private JedisTemplate redisTemplate;
@@ -43,8 +43,7 @@ public class HeartbeatProcessor extends AbstractMessageProcessor<IMHeartbeatInfo
             Integer terminal = ctx.channel().attr(terminalAttr).get();
             String key = String.join(":", IMRedisKey.IM_USER_SERVER_ID, userId.toString(), terminal.toString());
 //            redisTemplate.expire(key, IMConstant.ONLINE_TIMEOUT_SECOND, TimeUnit.SECONDS);
-//            redisTemplate.setExpire(key, IMConstant.ONLINE_TIMEOUT_SECOND, TimeUnit.SECONDS);
-            redisTemplate.setExpire(key, (int)IMConstant.ONLINE_TIMEOUT_SECOND);
+            redisTemplate.setExpire(key, (int) IMConstant.ONLINE_TIMEOUT_SECOND);
         }
     }
 

@@ -9,18 +9,18 @@ import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imcommon.model.IMSendResult;
 import com.bx.imcommon.model.IMUserInfo;
 import com.bx.imserver.netty.UserChannelCtxMap;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class PrivateMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> {
 
-    private final JedisTemplate redisTemplate;
+    @AutoWired
+    private JedisTemplate redisTemplate;
 
     @Override
     public void process(IMRecvInfo recvInfo) {

@@ -4,22 +4,17 @@ import com.bx.imcommon.contant.IMRedisKey;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
-import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 
-@Slf4j
-@Service
 public class IMServerGroup {
 
     public static volatile long serverId = 0;
-
-    //    RedisTemplate<String, Object> redisTemplate;
+    private List<IMServer> imServers;
     @AutoWired
     JedisTemplate jedisTemplate;
-
-    private final List<IMServer> imServers ;
 
     public IMServerGroup(List<IMServer> imServers) {
         this.imServers = imServers;
@@ -39,6 +34,7 @@ public class IMServerGroup {
         return true;
     }
 
+    @PostConstruct
     public void run(String... args) throws Exception {
         // 初始化SERVER_ID
         String key = IMRedisKey.IM_MAX_SERVER_ID;

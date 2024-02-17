@@ -2,6 +2,7 @@ package com.bx.imserver.task;
 
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import com.bx.imserver.netty.IMServerGroup;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +13,12 @@ import javax.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 
 @Slf4j
-@Service
 public abstract class AbstractPullMessageTask {
 
     private static final ExecutorService EXECUTOR_SERVICE = ThreadPoolExecutorFactory.getThreadPoolExecutor();
 
-    @Autowired
-    private IMServerGroup serverGroup;
+    @AutoWired
+    IMServerGroup serverGroup;
 
     @PostConstruct
     public void run(String... args) {
