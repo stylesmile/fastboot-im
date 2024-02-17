@@ -9,6 +9,7 @@ import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imcommon.model.IMSendResult;
 import com.bx.imcommon.model.IMUserInfo;
 import com.bx.imserver.netty.UserChannelCtxMap;
+import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PrivateMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final JedisTemplate redisTemplate;
 
     @Override
     public void process(IMRecvInfo recvInfo) {
@@ -59,7 +60,8 @@ public class PrivateMessageProcessor extends AbstractMessageProcessor<IMRecvInfo
             result.setData(recvInfo.getData());
             // 推送到结果队列
             String key = StrUtil.join(":",IMRedisKey.IM_RESULT_PRIVATE_QUEUE,recvInfo.getServiceName());
-            redisTemplate.opsForList().rightPush(key, result);
+//            redisTemplate.opsForList().rightPush(key, result);
+            redisTemplate.rpush(key, result);
         }
     }
 }

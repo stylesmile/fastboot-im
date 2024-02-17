@@ -7,22 +7,22 @@ import com.bx.imcommon.enums.IMCmdType;
 import com.bx.imcommon.model.IMHeartbeatInfo;
 import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imserver.constant.ChannelAttrKey;
+import io.github.stylesmile.annotation.AutoWired;
+import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@Service
 public class HeartbeatProcessor extends AbstractMessageProcessor<IMHeartbeatInfo> {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    @AutoWired
+    private JedisTemplate redisTemplate;
 
     @Override
     public void process(ChannelHandlerContext ctx, IMHeartbeatInfo beatInfo) {
@@ -42,7 +42,9 @@ public class HeartbeatProcessor extends AbstractMessageProcessor<IMHeartbeatInfo
             AttributeKey<Integer> terminalAttr = AttributeKey.valueOf(ChannelAttrKey.TERMINAL_TYPE);
             Integer terminal = ctx.channel().attr(terminalAttr).get();
             String key = String.join(":", IMRedisKey.IM_USER_SERVER_ID, userId.toString(), terminal.toString());
-            redisTemplate.expire(key, IMConstant.ONLINE_TIMEOUT_SECOND, TimeUnit.SECONDS);
+//            redisTemplate.expire(key, IMConstant.ONLINE_TIMEOUT_SECOND, TimeUnit.SECONDS);
+//            redisTemplate.setExpire(key, IMConstant.ONLINE_TIMEOUT_SECOND, TimeUnit.SECONDS);
+            redisTemplate.setExpire(key, (int)IMConstant.ONLINE_TIMEOUT_SECOND);
         }
     }
 
