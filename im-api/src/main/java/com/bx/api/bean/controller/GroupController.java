@@ -1,8 +1,8 @@
 package com.bx.api.bean.controller;
 
+import com.bx.api.bean.service.GroupServiceImpl;
 import com.bx.api.common.result.Result;
 import com.bx.api.common.result.ResultUtils;
-import com.bx.api.bean.service.GroupServiceImpl;
 import com.bx.api.domain.vo.GroupInviteVO;
 import com.bx.api.domain.vo.GroupMemberVO;
 import com.bx.api.domain.vo.GroupVO;

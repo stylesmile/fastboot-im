@@ -1,11 +1,11 @@
 package com.bx.api.bean.controller;
 
+import com.bx.api.bean.service.UserService;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.domain.dto.LoginDTO;
 import com.bx.api.domain.dto.ModifyPwdDTO;
 import com.bx.api.domain.dto.RegisterDTO;
-import com.bx.api.common.result.Result;
-import com.bx.api.common.result.ResultUtils;
-import com.bx.api.bean.service.UserService;
 import com.bx.api.domain.vo.LoginVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
@@ -28,8 +28,8 @@ public class LoginController {
     //    @PostMapping("/login")
     @RequestMapping("/login")
     @ApiOperation(value = "用户注册", notes = "用户注册")
-    public Result register(@Valid LoginDTO dto,Request request) {
-        LoginVO vo = userService.login(dto,request);
+    public Result register(@Valid LoginDTO dto, Request request) {
+        LoginVO vo = userService.login(dto, request);
         return ResultUtils.success(vo);
     }
 

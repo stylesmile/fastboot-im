@@ -1,9 +1,9 @@
 package com.bx.api.bean.controller;
 
 import com.bx.api.bean.service.GroupMessageService;
-import com.bx.api.domain.dto.GroupMessageDTO;
 import com.bx.api.common.result.Result;
 import com.bx.api.common.result.ResultUtils;
+import com.bx.api.domain.dto.GroupMessageDTO;
 import com.bx.api.domain.vo.GroupMessageVO;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;

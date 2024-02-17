@@ -5,7 +5,7 @@ import com.bx.api.domain.entity.Friend;
 import com.bx.api.common.result.Result;
 import com.bx.api.common.result.ResultUtils;
 import com.bx.api.bean.service.SessionService;
-import com.bx.api.vo.FriendVO;
+import com.bx.api.domain.vo.FriendVO;
 import io.github.stylesmile.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

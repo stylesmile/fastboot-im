@@ -1,13 +1,12 @@
 package com.bx.api.bean.controller;
 
-import com.bx.api.domain.entity.User;
+import com.bx.api.bean.service.SessionService;
+import com.bx.api.bean.service.UserService;
 import com.bx.api.common.result.Result;
 import com.bx.api.common.result.ResultUtils;
-import com.bx.api.bean.service.UserService;
-;
-import com.bx.api.bean.service.SessionService;
-import com.bx.api.domain.dto.session.UserSession;
 import com.bx.api.common.util.BeanUtils;
+import com.bx.api.domain.dto.session.UserSession;
+import com.bx.api.domain.entity.User;
 import com.bx.api.domain.vo.OnlineTerminalVO;
 import com.bx.api.domain.vo.UserVO;
 import io.github.stylesmile.annotation.*;
@@ -25,6 +24,7 @@ public class UserController {
     private UserService userService;
     @AutoWired
     private SessionService sessionService;
+
     //    @GetMapping("/user/terminal/online")
     @RequestMapping("/user/terminal/online")
     @ApiOperation(value = "判断用户哪个终端在线", notes = "返回在线的用户id的终端集合")
@@ -37,7 +37,8 @@ public class UserController {
     @RequestMapping("/user/self")
     @ApiOperation(value = "获取当前用户信息", notes = "获取当前用户信息")
     public Result<UserVO> findSelfInfo() {
-        UserSession session = sessionService.getSession();;
+        UserSession session = sessionService.getSession();
+        ;
         User user = userService.getById(session.getUserId());
         UserVO userVO = BeanUtils.copyProperties(user, UserVO.class);
         return ResultUtils.success(userVO);
