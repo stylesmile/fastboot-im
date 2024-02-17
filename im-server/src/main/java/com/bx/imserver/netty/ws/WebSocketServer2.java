@@ -28,20 +28,22 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 //@ConditionalOnProperty(prefix = "websocket", value = "enable", havingValue = "true", matchIfMissing = true)
-public class WebSocketServer {
+public class WebSocketServer2 implements IMServer {
 
     @Value("websocket.port")
-    private static String port;
+    private String port;
 
     private volatile boolean ready = false;
 
-    private static EventLoopGroup bossGroup;
-    private static EventLoopGroup workGroup;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workGroup;
 
+    @Override
     public boolean isReady() {
         return ready;
     }
 
+    @Override
     public void start() {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup();
@@ -88,6 +90,7 @@ public class WebSocketServer {
         }
     }
 
+    @Override
     public void stop() {
         if (bossGroup != null && !bossGroup.isShuttingDown() && !bossGroup.isShutdown()) {
             bossGroup.shutdownGracefully();
