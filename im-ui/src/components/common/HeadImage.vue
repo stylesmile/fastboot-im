@@ -43,7 +43,7 @@
 			showUserInfo(e){
 				if(this.id && this.id>0){
 					this.$http({
-						url: `/user/find/${this.id}`,
+						url: `/user/find?id=${this.id}`,
 						method: 'get'
 					}).then((user) => {
 						this.$store.commit("setUserInfoBoxPos",e);

@@ -156,7 +156,7 @@
 			},
 			loadUserInfo(friend, index) {
 				this.$http({
-					url: `/user/find/${friend.id}`,
+					url: `/user/find?id=${friend.id}`,
 					method: 'get'
 				}).then((user) => {
 					this.userInfo = user;

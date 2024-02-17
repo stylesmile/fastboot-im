@@ -46,7 +46,7 @@ public class UserController {
 
 
     //    @GetMapping("/user/find/{id}")
-    @RequestMapping("/user/find/{id}")
+    @RequestMapping("/user/find")
     @ApiOperation(value = "查找用户", notes = "根据id查找用户")
 //    public Result<UserVO> findById(@NotEmpty @PathVariable("id") Long id) {
     public Result<UserVO> findById(@NotEmpty Long id) {
