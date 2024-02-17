@@ -77,18 +77,21 @@ public class UserService {
         session.setTerminal(dto.getTerminal());
 
         String strJson = JSON.toJSONString(session);
-        String token = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
+        String accessToken = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
         jedisTemplate.setSerializeDataEx(
-                String.format(RedisKey.Login.USER_SESSION, token),
+                String.format(RedisKey.Login.USER_SESSION, accessToken),
                 user, 600);
 
 //        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
 //        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
         LoginVO vo = new LoginVO();
-        vo.setAccessToken(token);
+        vo.setAccessToken(accessToken);
+        vo.setRefreshToken(accessToken);
 //        vo.setAccessToken(accessToken);
 //        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
-//        vo.setRefreshToken(refreshToken);
+        vo.setRefreshToken(accessToken);
+        vo.setAccessTokenExpiresIn(1800);
+        vo.setRefreshTokenExpiresIn(604800);
 //        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
         //返回token
         // 设置缓存，600秒
