@@ -6,6 +6,7 @@ import com.bx.api.common.enums.ResultCode;
 import com.bx.api.common.result.Result;
 import com.bx.api.common.result.ResultUtils;
 import com.bx.api.domain.dto.session.UserSession;
+import com.bx.imcommon.contant.IMRedisKey;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.filter.Filter;
@@ -38,7 +39,7 @@ public class TokenFilter implements Filter {
         }
         String token = request.getHeaders().get("accessToken");
         UserSession userSession = jedisTemplate.getSerializeData(
-                String.format(RedisKey.Login.USER_SESSION, token),
+                String.format(IMRedisKey.TOKEN_USER_SESSION, token),
                 UserSession.class);
         if (userSession != null) {
             SessionService.setSession(userSession);

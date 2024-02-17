@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bx.api.common.contant.RedisKey;
 import com.bx.imclient.IMClient;
+import com.bx.imcommon.contant.IMRedisKey;
 import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.util.IPUtil;
 import com.bx.imcommon.util.JwtUtil;
@@ -82,7 +83,7 @@ public class UserService {
         String strJson = JSON.toJSONString(session);
         String accessToken = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
         jedisTemplate.setSerializeDataEx(
-                String.format(RedisKey.Login.USER_SESSION, accessToken),
+                String.format(IMRedisKey.TOKEN_USER_SESSION, accessToken),
                 session, 600);
 
 //        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());

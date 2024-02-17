@@ -2,16 +2,17 @@ package com.bx.imcommon.contant;
 
 public final class IMRedisKey {
 
-    private IMRedisKey() {}
+    private IMRedisKey() {
+    }
 
     /**
      * im-server最大id,从0开始递增
      */
-    public static final String  IM_MAX_SERVER_ID = "im:max_server_id";
+    public static final String IM_MAX_SERVER_ID = "im:max_server_id";
     /**
      * 用户ID所连接的IM-server的ID
      */
-    public static final String  IM_USER_SERVER_ID = "im:user:server_id";
+    public static final String IM_USER_SERVER_ID = "im:user:server_id";
     /**
      * 未读私聊消息队列
      */
@@ -28,5 +29,10 @@ public final class IMRedisKey {
      * 群聊消息发送结果队列
      */
     public static final String IM_RESULT_GROUP_QUEUE = "im:result:group";
+
+    /**
+     * 用户token
+     */
+    public static final String TOKEN_USER_SESSION = "token_user:user_info_%s";
 
 }

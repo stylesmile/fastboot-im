@@ -37,7 +37,11 @@ public class LoginProcessor extends AbstractMessageProcessor<IMLoginInfo> {
 
     @Override
     public synchronized void process(ChannelHandlerContext ctx, IMLoginInfo loginInfo) {
-        if (!JwtUtil.checkSign(loginInfo.getAccessToken(), accessTokenSecret)) {
+        Object userSession = redisTemplate.getSerializeData(
+                String.format(IMRedisKey.TOKEN_USER_SESSION, loginInfo.getAccessToken()),
+                Object.class);
+//        if (!JwtUtil.checkSign(loginInfo.getAccessToken(), accessTokenSecret)) {
+        if (userSession == null) {
             ctx.channel().close();
             log.warn("用户token校验不通过，强制下线,token:{}", loginInfo.getAccessToken());
         }

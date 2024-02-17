@@ -5,11 +5,7 @@ public final class RedisKey {
 
     private RedisKey() {
     }
-    public static final class Login {
 
-        public static final String USER_SESSION = "user:user_info_%s";
-
-    }
     /**
      * 已读群聊消息位置(已读最大id)
      */
