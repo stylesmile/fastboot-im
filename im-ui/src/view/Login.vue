@@ -115,8 +115,8 @@
 							})
 							.then((data) => {
 								// 保存密码到cookie(不安全)
-								this.setCookie('username', this.loginForm.userName);
-								this.setCookie('password', this.loginForm.password);
+								// this.setCookie('username', this.loginForm.userName);
+								// this.setCookie('password', this.loginForm.password);
 								// 保存token
 								sessionStorage.setItem("accessToken", data.accessToken);
 								sessionStorage.setItem("refreshToken", data.refreshToken);
