@@ -3,10 +3,8 @@ package com.bx.imserver.task;
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import com.bx.imserver.netty.IMServerGroup;
 import io.github.stylesmile.annotation.AutoWired;
-import io.github.stylesmile.annotation.Service;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

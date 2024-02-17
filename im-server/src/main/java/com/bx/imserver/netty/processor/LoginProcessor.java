@@ -14,15 +14,13 @@ import com.bx.imserver.netty.IMServerGroup;
 import com.bx.imserver.netty.UserChannelCtxMap;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.ioc.Value;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -33,6 +31,9 @@ public class LoginProcessor extends AbstractMessageProcessor<IMLoginInfo> {
 
     @Value("${jwt.accessToken.secret}")
     private String accessTokenSecret;
+    @Value("websocket.port")
+
+    private String accessTokenSecret2;
 
     @Override
     public synchronized void process(ChannelHandlerContext ctx, IMLoginInfo loginInfo) {

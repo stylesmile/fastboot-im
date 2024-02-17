@@ -5,6 +5,7 @@ import com.bx.imserver.netty.IMServer;
 import com.bx.imserver.netty.ws.endecode.MessageProtocolDecoder;
 import com.bx.imserver.netty.ws.endecode.MessageProtocolEncoder;
 import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.ioc.Value;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -15,7 +16,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,14 +30,13 @@ import java.util.concurrent.TimeUnit;
 //@ConditionalOnProperty(prefix = "websocket", value = "enable", havingValue = "true", matchIfMissing = true)
 public class WebSocketServer implements IMServer {
 
-    @Value("${websocket.port}")
-    private int port;
+    @Value("websocket.port")
+    private String port;
 
     private volatile boolean ready = false;
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workGroup;
-
 
     @Override
     public boolean isReady() {
@@ -79,10 +78,11 @@ public class WebSocketServer implements IMServer {
 
         try {
             // 绑定端口，启动select线程，轮询监听channel事件，监听到事件之后就会交给从线程池处理
-            bootstrap.bind(port).sync().channel();
+            bootstrap.bind(Integer.valueOf(port)).sync().channel();
             // 就绪标志
             this.ready = true;
             log.info("websocket server 初始化完成,端口：{}", port);
+            System.out.println("websocket server 初始化完成,端口：{}" + port);
             // 等待服务端口关闭
             //channel.closeFuture().sync();
         } catch (InterruptedException e) {

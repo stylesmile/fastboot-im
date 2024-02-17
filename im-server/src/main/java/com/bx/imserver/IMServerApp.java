@@ -1,5 +1,6 @@
 package com.bx.imserver;
 
+import com.bx.imserver.netty.IMServerGroup;
 import io.github.stylesmile.app.App;
 
 //@EnableAsync
