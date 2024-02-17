@@ -80,7 +80,7 @@ public class WebSocketServer {
             // 就绪标志
             this.ready = true;
             log.info("websocket server 初始化完成,端口：{}", port);
-            System.out.println("websocket server 初始化完成,端口：{}" + port);
+            System.out.println("websocket server 初始化完成,端口：" + port);
             // 等待服务端口关闭
             //channel.closeFuture().sync();
         } catch (InterruptedException e) {

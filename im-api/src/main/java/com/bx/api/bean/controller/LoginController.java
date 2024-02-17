@@ -28,7 +28,7 @@ public class LoginController {
     //    @PostMapping("/login")
     @RequestMapping("/login")
     @ApiOperation(value = "用户注册", notes = "用户注册")
-    public Result register(@Valid LoginDTO dto, Request request) {
+    public Result login(@Valid LoginDTO dto, Request request) {
         LoginVO vo = userService.login(dto, request);
         return ResultUtils.success(vo);
     }
@@ -55,7 +55,7 @@ public class LoginController {
 
     @RequestMapping(value = "/modifyPwd", method = RequestMethod.PUT)
     @ApiOperation(value = "修改密码", notes = "修改用户密码")
-    public Result update(@Valid @RequestBody ModifyPwdDTO dto) {
+    public Result modifyPassword(@Valid @RequestBody ModifyPwdDTO dto) {
         userService.modifyPassword(dto);
         return ResultUtils.success();
     }
