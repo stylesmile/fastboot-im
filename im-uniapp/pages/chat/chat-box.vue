@@ -451,7 +451,7 @@
 			},
 			loadGroup(groupId) {
 				this.$http({
-					url: `/group/find/${groupId}`,
+					url: `/group/find?groupId=${groupId}`,
 					method: 'GET'
 				}).then((group) => {
 					this.group = group;

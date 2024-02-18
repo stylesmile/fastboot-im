@@ -152,7 +152,7 @@
 			},
 			loadGroupInfo() {
 				this.$http({
-					url: `/group/find/${this.groupId}`,
+					url: `/group/find?groupId=${this.groupId}`,
 					method: 'GET'
 				}).then((group) => {
 					this.group = group;

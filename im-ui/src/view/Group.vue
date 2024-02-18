@@ -202,7 +202,7 @@
 					type: 'warning'
 				}).then(() => {
 					this.$http({
-						url: `/group/kick/${this.activeGroup.id}`,
+						url: `/group/kick?groupId${this.activeGroup.id}`,
 						method: 'delete',
 						params: {
 							userId: member.userId

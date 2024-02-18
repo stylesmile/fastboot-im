@@ -48,7 +48,7 @@ public class GroupController {
 
     @ApiOperation(value = "查询群聊", notes = "查询单个群聊信息")
 //    @GetMapping("/group/find/{groupId}")
-    @RequestMapping("/group/find/{groupId}")
+    @RequestMapping("/group/find")
 //    public Result<GroupVO> findGroup(@NotNull(message = "群聊id不能为空") @PathVariable Long groupId) {
     public Result<GroupVO> findGroup(@NotNull(message = "群聊id不能为空") Long groupId) {
         return ResultUtils.success(groupService.findById(groupId));
@@ -89,7 +89,7 @@ public class GroupController {
 
     @ApiOperation(value = "踢出群聊", notes = "将用户踢出群聊")
 //    @DeleteMapping("/group/kick/{groupId}")
-    @RequestMapping("/group/kick/{groupId}")
+    @RequestMapping("/group/kick")
 //    public Result kickGroup(@NotNull(message = "群聊id不能为空") @PathVariable Long groupId,
     public Result kickGroup(@NotNull(message = "群聊id不能为空") Long groupId,
                             @NotNull(message = "用户id不能为空") @RequestParam("userId") Long userId) {

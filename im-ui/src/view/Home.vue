@@ -299,7 +299,7 @@
 						resolve(group);
 					} else {
 						this.$http({
-							url: `/group/find/${id}`,
+							url: `/group/find?groupId=${id}`,
 							method: 'get'
 						}).then((group) => {
 							resolve(group)

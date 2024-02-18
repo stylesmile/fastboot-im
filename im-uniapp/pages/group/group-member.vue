@@ -49,7 +49,7 @@
 						if (res.cancel)
 							return;
 						this.$http({
-							url: `/group/kick/${this.group.id}?userId=${member.userId}`,
+							url: `/group/kick?groupId=${this.group.id}&userId=${member.userId}`,
 							method: 'DELETE'
 						}).then(() => {
 							uni.showToast({
@@ -64,7 +64,7 @@
 			},
 			loadGroupInfo(id) {
 				this.$http({
-					url: `/group/find/${id}`,
+					url: `/group/find?groupId=${id}`,
 					method: 'GET'
 				}).then((group) => {
 					this.group = group;
