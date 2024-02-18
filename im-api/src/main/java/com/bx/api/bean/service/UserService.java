@@ -4,30 +4,28 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.bx.api.common.contant.RedisKey;
-import com.bx.imclient.IMClient;
-import com.bx.imcommon.contant.IMRedisKey;
-import com.bx.imcommon.enums.IMTerminalType;
-import com.bx.imcommon.util.IPUtil;
-import com.bx.imcommon.util.JwtUtil;
+import com.bx.api.common.enums.ResultCode;
+import com.bx.api.common.exception.GlobalException;
 import com.bx.api.common.util.BeanUtils;
 import com.bx.api.common.util.MD5Util;
 import com.bx.api.config.JwtProperties;
 import com.bx.api.domain.dto.LoginDTO;
 import com.bx.api.domain.dto.ModifyPwdDTO;
 import com.bx.api.domain.dto.RegisterDTO;
+import com.bx.api.domain.dto.session.UserSession;
 import com.bx.api.domain.entity.Friend;
 import com.bx.api.domain.entity.GroupMember;
 import com.bx.api.domain.entity.User;
-import com.bx.api.common.enums.ResultCode;
-import com.bx.api.common.exception.GlobalException;
-import com.bx.api.mapper.FriendMapper;
-import com.bx.api.mapper.GroupMemberMapper;
-import com.bx.api.mapper.UserMapper;
-import com.bx.api.domain.dto.session.UserSession;
 import com.bx.api.domain.vo.LoginVO;
 import com.bx.api.domain.vo.OnlineTerminalVO;
 import com.bx.api.domain.vo.UserVO;
+import com.bx.api.mapper.FriendMapper;
+import com.bx.api.mapper.GroupMemberMapper;
+import com.bx.api.mapper.UserMapper;
+import com.bx.imclient.IMClient;
+import com.bx.imcommon.contant.IMRedisKey;
+import com.bx.imcommon.enums.IMTerminalType;
+import com.bx.imcommon.util.IPUtil;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
@@ -103,21 +101,42 @@ public class UserService {
     }
 
     //@Override
-    public LoginVO refreshToken(String refreshToken) {
-        //验证 token
-        if (!JwtUtil.checkSign(refreshToken, jwtProperties.getRefreshTokenSecret())) {
-            throw new GlobalException("refreshToken无效或已过期");
-        }
-        String strJson = JwtUtil.getInfo(refreshToken);
-        Long userId = JwtUtil.getUserId(refreshToken);
-        String accessToken = JwtUtil.sign(userId, strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
-        String newRefreshToken = JwtUtil.sign(userId, strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
+    public LoginVO refreshToken(String refreshToken, Request request) {
+        UserSession session = jedisTemplate.getSerializeData(
+                String.format(IMRedisKey.TOKEN_USER_SESSION, refreshToken), UserSession.class);
+        String strJson = JSON.toJSONString(session);
+        String accessToken = MD5Util.calculateMD5(strJson + System.currentTimeMillis() + IPUtil.getClientIP(request));
+        jedisTemplate.setExpire(
+                String.format(IMRedisKey.TOKEN_USER_SESSION, accessToken), 1800);
+
+//        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
+//        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
         LoginVO vo = new LoginVO();
         vo.setAccessToken(accessToken);
-        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
-        vo.setRefreshToken(newRefreshToken);
-        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        vo.setRefreshToken(accessToken);
+//        vo.setAccessToken(accessToken);
+//        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
+        vo.setRefreshToken(accessToken);
+        vo.setAccessTokenExpiresIn(1800);
+        vo.setRefreshTokenExpiresIn(604800);
+//        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        //返回token
+        // 设置缓存，600秒
         return vo;
+        //验证 token
+//        if (!JwtUtil.checkSign(refreshToken, jwtProperties.getRefreshTokenSecret())) {
+//            throw new GlobalException("refreshToken无效或已过期");
+//        }
+//        String strJson = JwtUtil.getInfo(refreshToken);
+//        Long userId = JwtUtil.getUserId(refreshToken);
+//        String accessToken = JwtUtil.sign(userId, strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
+//        String newRefreshToken = JwtUtil.sign(userId, strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
+//        LoginVO vo = new LoginVO();
+//        vo.setAccessToken(accessToken);
+//        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
+//        vo.setRefreshToken(newRefreshToken);
+//        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+//        return vo;
     }
 
     //@Override

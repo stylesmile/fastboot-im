@@ -40,7 +40,7 @@ public class LoginController {
 //    public Result refreshToken(@RequestHeader("refreshToken") String refreshToken) {
     public Result refreshToken(Request re) {
         String refreshToken = re.getHeaders().get("refreshToken");
-        LoginVO vo = userService.refreshToken(refreshToken);
+        LoginVO vo = userService.refreshToken(refreshToken,re);
         return ResultUtils.success(vo);
     }
 
