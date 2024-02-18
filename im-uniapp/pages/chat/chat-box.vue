@@ -470,7 +470,7 @@
 			loadFriend(friendId) {
 				// 获取对方最新信息
 				this.$http({
-					url: `/user/find/${friendId}`,
+					url: `/user/find?id=${friendId}`,
 					method: 'GET'
 				}).then((friend) => {
 					this.friend = friend;

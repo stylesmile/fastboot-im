@@ -31,7 +31,7 @@ public class GroupMessageController {
     }
 
     //    @DeleteMapping("/message/group/recall/{id}")
-    @RequestMapping("/message/group/recall/{id}")
+    @RequestMapping("/message/group/recall")
     @ApiOperation(value = "撤回消息", notes = "撤回群聊消息")
 //    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") @PathVariable Long id) {
     public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") Long id) {

@@ -29,7 +29,7 @@ public class PrivateMessageController {
 
 
     //    @DeleteMapping("/message/private/recall/{id}")
-    @RequestMapping("/message/private/recall/{id}")
+    @RequestMapping("/message/private/recall")
     @ApiOperation(value = "撤回消息", notes = "撤回私聊消息")
 //    public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") @PathVariable Long id) {
     public Result<Long> recallMessage(@NotNull(message = "消息id不能为空") Long id) {

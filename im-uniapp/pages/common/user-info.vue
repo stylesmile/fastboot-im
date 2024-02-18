@@ -116,7 +116,7 @@
 			},
 			loadUserInfo(id){
 				this.$http({
-					url: "/user/find/" + id,
+					url: "/user/find?id=" + id,
 					method: 'GET'
 				}).then((user) => {
 					this.userInfo = user;
