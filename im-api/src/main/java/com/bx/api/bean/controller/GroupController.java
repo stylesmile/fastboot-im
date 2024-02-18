@@ -39,7 +39,7 @@ public class GroupController {
 
     @ApiOperation(value = "解散群聊", notes = "解散群聊")
 //    @DeleteMapping("/group/delete/{groupId}")
-    @RequestMapping("/group/delete/{groupId}")
+    @RequestMapping("/group/delete")
 //    public Result deleteGroup(@NotNull(message = "群聊id不能为空") @PathVariable Long groupId) {
     public Result deleteGroup(@NotNull(message = "群聊id不能为空") Long groupId) {
         groupService.deleteGroup(groupId);

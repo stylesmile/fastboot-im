@@ -184,7 +184,7 @@
 					type: 'warning'
 				}).then(() => {
 					this.$http({
-						url: `/group/delete/${this.activeGroup.id}`,
+						url: `/group/delete?groupId=${this.activeGroup.id}`,
 						method: 'delete'
 					}).then(() => {
 						this.$message.success(`群聊'${this.activeGroup.name}'已解散`);

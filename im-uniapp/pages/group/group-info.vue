@@ -128,7 +128,7 @@
 						if (res.cancel)
 							return;
 						this.$http({
-							url: `/group/delete/${this.groupId}`,
+							url: `/group/delete?groupId=${this.groupId}`,
 							method: 'delete'
 						}).then(() => {
 							uni.showModal({
