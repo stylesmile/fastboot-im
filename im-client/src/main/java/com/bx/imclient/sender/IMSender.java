@@ -47,7 +47,8 @@ public class IMSender {
                 recvInfo.setReceivers(Collections.singletonList(new IMUserInfo(message.getRecvId(), terminal)));
                 recvInfo.setData(message.getData());
 //                redisTemplate.opsForList().rightPush(sendKey, recvInfo);
-                jedisTemplate.setSerializeData(sendKey, recvInfo);
+                jedisTemplate.rpush(sendKey, recvInfo);
+//                jedisTemplate.setSerializeData(sendKey, recvInfo);
 
             } else {
                 IMSendResult result = new IMSendResult();

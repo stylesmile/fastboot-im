@@ -3,21 +3,48 @@ package com.bx.imserver.netty;
 import com.bx.imcommon.contant.IMRedisKey;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.ioc.BeanContainer;
 import io.github.stylesmile.jedis.JedisTemplate;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class IMServerGroup {
-
-    public static volatile long serverId = 0;
-    private List<IMServer> imServers;
     @AutoWired
     JedisTemplate jedisTemplate;
+    @AutoWired
+    Jedis jedis;
+
+    public static volatile long serverId = 0;
+    public static List<IMServer> imServers = new ArrayList(){{
+        add(new IMServer() {
+            @Override
+            public boolean isReady() {
+                return false;
+            }
+
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void stop() {
+
+            }
+        });
+    }};
+
 
     public IMServerGroup(List<IMServer> imServers) {
         this.imServers = imServers;
+    }
+
+    public IMServerGroup() {
     }
 
     /***
@@ -39,11 +66,13 @@ public class IMServerGroup {
         // 初始化SERVER_ID
         String key = IMRedisKey.IM_MAX_SERVER_ID;
 //        serverId = redisTemplate.opsForValue().increment(key, 1);
-        serverId = jedisTemplate.incrLongData(key, 1);
         // 启动服务
         for (IMServer imServer : imServers) {
             imServer.start();
         }
+//        serverId = jedis.incrBy(key,1);
+//        serverId = jedisTemplate.incrLongData(key, 1);
+        System.out.println("serverId:" + serverId);
     }
 
     @PreDestroy
