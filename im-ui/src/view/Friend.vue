@@ -97,7 +97,7 @@
 					type: 'warning'
 				}).then(() => {
 					this.$http({
-						url: `/friend/delete/${friend.id}`,
+						url: `/friend/delete?friendId=${friend.id}`,
 						method: 'delete'
 					}).then((data) => {
 						this.$message.success("删除好友成功");

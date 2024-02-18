@@ -60,7 +60,7 @@ public class FriendController {
 
 
     //    @DeleteMapping("/friend/delete/{friendId}")
-    @RequestMapping("/friend/delete/{friendId}")
+    @RequestMapping("/friend/delete")
     @ApiOperation(value = "删除好友", notes = "解除好友关系")
 //    public Result delFriend(@NotEmpty(message = "好友id不可为空") @PathVariable("friendId") Long friendId) {
     public Result delFriend(@NotEmpty(message = "好友id不可为空") Long friendId) {

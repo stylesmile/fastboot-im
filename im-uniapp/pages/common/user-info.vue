@@ -85,7 +85,7 @@
 						if(res.cancel)
 							return;
 						this.$http({
-							url: `/friend/delete/${this.userInfo.id}`,
+							url: `/friend/delete?friendId${this.userInfo.id}`,
 							method: 'delete'
 						}).then((data) => {
 							this.$store.commit("removeFriend", this.userInfo.id);
