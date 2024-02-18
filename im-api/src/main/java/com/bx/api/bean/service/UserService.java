@@ -31,6 +31,7 @@ import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.server.Request;
 import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.Jedis;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,6 +58,8 @@ public class UserService {
     private GroupMemberService groupMemberService;
     @AutoWired
     private JedisTemplate jedisTemplate;
+    @AutoWired
+    private Jedis jedis;
     @AutoWired
     private SessionService sessionService;
 

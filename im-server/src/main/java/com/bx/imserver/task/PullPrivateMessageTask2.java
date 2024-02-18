@@ -29,6 +29,7 @@ public class PullPrivateMessageTask2 {
     private JedisTemplate redisTemplate;
     @AutoWired
     private Jedis jedis;
+
     public void run(String... args) {
         EXECUTOR_SERVICE.execute(new Runnable() {
             @SneakyThrows
@@ -36,7 +37,7 @@ public class PullPrivateMessageTask2 {
             public void run() {
                 try {
 //                    if (imServerGroup.isReady()) {
-                        pullMessage();
+                    pullMessage();
 //                    }
                 } catch (Exception e) {
                     log.error("任务调度异常", e);
@@ -57,8 +58,10 @@ public class PullPrivateMessageTask2 {
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
 //        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
         byte[] value = jedis.rpop(GsonByteUtils.toByteArray(key));
-
-        JSONObject jsonObject = GsonByteUtils.fromByteArray(value,JSONObject.class);
+        if (value == null) {
+            return;
+        }
+        JSONObject jsonObject = GsonByteUtils.fromByteArray(value, JSONObject.class);
 //        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
         while (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
@@ -66,7 +69,10 @@ public class PullPrivateMessageTask2 {
             processor.process(recvInfo);
             // 下一条消息
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            jsonObject = redisTemplate.rpop(key, JSONObject.class);
+            byte[] bytes = jedis.lpop(GsonByteUtils.toByteArray(key));
+            if (bytes != null && bytes.length > 0) {
+                jsonObject =  GsonByteUtils.fromByteArray(bytes, JSONObject.class);
+            }
         }
     }
 }
