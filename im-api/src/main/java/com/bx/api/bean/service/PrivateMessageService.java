@@ -184,7 +184,6 @@ public class PrivateMessageService {
 
     public void readedMessage(Long friendId) {
         UserSession session = sessionService.getSession();
-        ;
         // 推送消息
         PrivateMessageVO msgInfo = new PrivateMessageVO();
         msgInfo.setType(MessageType.READED.code());
