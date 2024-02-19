@@ -26,14 +26,14 @@ public class PullPrivateMessageTask extends AbstractPullMessageTask {
         // 从redis拉取未读消息
         String key = String.join(":", IMRedisKey.IM_MESSAGE_PRIVATE_QUEUE, IMServerGroup.serverId + "");
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
+        JSONObject jsonObject = redisTemplate.rpopSerializeData(key, JSONObject.class);
         while (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
             AbstractMessageProcessor processor = ProcessorFactory.createProcessor(IMCmdType.PRIVATE_MESSAGE);
             processor.process(recvInfo);
             // 下一条消息
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            jsonObject = redisTemplate.rpop(key, JSONObject.class);
+            jsonObject = redisTemplate.rpopSerializeData(key, JSONObject.class);
         }
     }
 }
