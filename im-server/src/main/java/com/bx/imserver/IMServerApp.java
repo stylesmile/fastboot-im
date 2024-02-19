@@ -1,19 +1,11 @@
 package com.bx.imserver;
 
-import com.bx.imserver.netty.IMServer;
 import com.bx.imserver.netty.IMServerGroup;
 import com.bx.imserver.netty.ws.WebSocketServer;
-import com.bx.imserver.task.AbstractPullMessageTask;
-import com.bx.imserver.task.PullGroupMessageTask;
-import com.bx.imserver.task.PullPrivateMessageTask;
-import com.bx.imserver.task.PullPrivateMessageTask2;
+import com.bx.imserver.task.PullMessageTask;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Controller;
-import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.app.App;
-
-import java.util.ArrayList;
-import java.util.List;
 
 //@EnableAsync
 //@EnableScheduling
@@ -26,7 +18,7 @@ public class IMServerApp {
     @AutoWired
     static IMServerGroup imServerGroup;
     @AutoWired
-    static PullPrivateMessageTask2 pullPrivateMessageTask2;
+    static PullMessageTask pullMessageTask;
 
     //    public static void main(String[] args) {
 //        SpringApplication.run(IMServerApp.class, args);
@@ -34,14 +26,10 @@ public class IMServerApp {
     public static void main(String[] args) throws Exception {
 
         App.start(IMServerApp.class, args);
-
+        //启动websocket服务
         webSocketServer.start();
-//        PullGroupMessageTask pullGroupMessageTask = new PullGroupMessageTask();
-//        PullPrivateMessageTask2 pullPrivateMessageTask2 = new PullPrivateMessageTask2();
-//        pullPrivateMessageTask2.run();
-//        PullPrivateMessageTask pullPrivateMessageTask = new PullPrivateMessageTask();
-//        pullPrivateMessageTask.run();
-        pullPrivateMessageTask2.run();
+        // 拉取消息
+        pullMessageTask.run();
     }
 
 }
