@@ -13,6 +13,7 @@ import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.ioc.Value;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.tool.GsonByteUtils;
+import io.github.stylesmile.tool.JsonGsonUtil;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -49,13 +50,7 @@ public class IMSender {
                 recvInfo.setSender(message.getSender());
                 recvInfo.setReceivers(Collections.singletonList(new IMUserInfo(message.getRecvId(), terminal)));
                 recvInfo.setData(message.getData());
-//                redisTemplate.opsForList().rightPush(sendKey, recvInfo);
-//                jedis.rpush(sendKey+System.currentTimeMillis(), "recvInfo");
-//                jedis.rpush(GsonByteUtils.toByteArray(sendKey), GsonByteUtils.toByteArray(recvInfo));
-//                jedisTemplate.rpush(sendKey+System.currentTimeMillis(), "recvInfo");
-                jedisTemplate.rpushSerializeData(sendKey, recvInfo);
-                System.out.println();
-
+                jedis.rpush(GsonByteUtils.toByteArray(sendKey), GsonByteUtils.toByteArray(recvInfo));
             } else {
                 IMSendResult result = new IMSendResult();
                 result.setSender(message.getSender());
@@ -85,9 +80,9 @@ public class IMSender {
                     recvInfo.setSender(message.getSender());
                     recvInfo.setReceivers(Collections.singletonList(new IMUserInfo(message.getSender().getId(), terminal)));
                     recvInfo.setData(message.getData());
-//                    redisTemplate.opsForList().rightPush(sendKey, recvInfo);
-                    jedisTemplate.rpushSerializeData(sendKey, recvInfo);
-//                    jedisTemplate.setSerializeData(sendKey, recvInfo);
+//                    jedisTemplate.rpushSerializeData(sendKey, recvInfo);
+                    jedis.rpush(GsonByteUtils.toByteArray(sendKey), GsonByteUtils.toByteArray(recvInfo));
+
                 }
             }
         }
@@ -167,10 +162,10 @@ public class IMSender {
                     recvInfo.setSendResult(false);
                     recvInfo.setData(message.getData());
                     String sendKey = String.join(":", IMRedisKey.IM_MESSAGE_GROUP_QUEUE, serverId.toString());
-//                    redisTemplate.opsForList().rightPush(sendKey, recvInfo);
-//                    jedisTemplate.setSerializeData(sendKey, recvInfo);
-                    jedisTemplate.rpushSerializeData(sendKey, recvInfo);
+//                    jedisTemplate.rpushSerializeData(sendKey, recvInfo);
+                    jedis.rpush(GsonByteUtils.toByteArray(sendKey), GsonByteUtils.toByteArray(recvInfo));
 
+//                    jedisTemplate.rpush(sendKey, JsonGsonUtil.BeanToJson(recvInfo));
                 }
             }
         }
