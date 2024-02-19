@@ -63,9 +63,7 @@ public class PrivateMessageProcessor extends AbstractMessageProcessor<IMRecvInfo
             result.setData(recvInfo.getData());
             // 推送到结果队列
             String key = StrUtil.join(":", IMRedisKey.IM_RESULT_PRIVATE_QUEUE, recvInfo.getServiceName());
-//            redisTemplate.opsForList().rightPush(key, result);
-            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(result));
-//            redisTemplate.rpush(key, result);
+            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(recvInfo));
         }
     }
 }

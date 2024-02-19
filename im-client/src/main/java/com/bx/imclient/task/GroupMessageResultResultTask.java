@@ -47,14 +47,13 @@ public class GroupMessageResultResultTask extends AbstractMessageResultTask {
     List<IMSendResult> loadBatch() {
         String key = StrUtil.join(":", IMRedisKey.IM_RESULT_GROUP_QUEUE, appName);
         //这个接口redis6.2以上才支持
-        //List<Object> list = redisTemplate.opsForList().leftPop(key, batchSize);
         List<IMSendResult> results = new LinkedList<>();
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-        JSONObject jsonObject =  jedisTemplate.getSerializeData(key, JSONObject.class);
+        JSONObject jsonObject =  jedisTemplate.lpopSerializeData(key, JSONObject.class);
         while (!Objects.isNull(jsonObject) && results.size() < batchSize) {
             results.add(jsonObject.toJavaObject(IMSendResult.class));
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            jsonObject = jedisTemplate.getSerializeData(key,JSONObject.class);
+            jsonObject = jedisTemplate.lpopSerializeData(key,JSONObject.class);
 
         }
         return results;

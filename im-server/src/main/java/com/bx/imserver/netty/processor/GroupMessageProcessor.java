@@ -12,8 +12,10 @@ import com.bx.imserver.netty.UserChannelCtxMap;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
+import io.github.stylesmile.tool.GsonByteUtils;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -22,6 +24,8 @@ import java.util.List;
 public class GroupMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> {
     @AutoWired
     private JedisTemplate redisTemplate;
+    @AutoWired
+    private Jedis jedis;
 
     @Override
     public void process(IMRecvInfo recvInfo) {
@@ -64,7 +68,8 @@ public class GroupMessageProcessor extends AbstractMessageProcessor<IMRecvInfo> 
             // 推送到结果队列
             String key = StrUtil.join(":", IMRedisKey.IM_RESULT_GROUP_QUEUE, recvInfo.getServiceName());
 //            redisTemplate.opsForList().rightPush(key, result);
-            redisTemplate.rpushSerializeData(key, result);
+            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(recvInfo));
+
         }
     }
 }

@@ -52,12 +52,12 @@ public class PrivateMessageResultResultTask extends AbstractMessageResultTask {
         //List<Object> list = redisTemplate.opsForList().leftPop(key, batchSize);
         List<IMSendResult> results = new LinkedList<>();
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-        JSONObject jsonObject = jedisTemplate.getSerializeData(key, JSONObject.class);
+        JSONObject jsonObject = jedisTemplate.lpopSerializeData(key, JSONObject.class);
 
         while (!Objects.isNull(jsonObject) && results.size() < batchSize) {
             results.add(jsonObject.toJavaObject(IMSendResult.class));
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            jsonObject = jedisTemplate.getSerializeData(key, JSONObject.class);
+            jsonObject = jedisTemplate.lpopSerializeData(key, JSONObject.class);
 
         }
         return results;
