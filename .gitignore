@@ -8,3 +8,9 @@
 /im-server/src/main/resources/logback-prod.xml
 /im-commom/im-commom.iml
 /im-uniapp/node_modules/
+/im-commom/target/
+/im-server/target/
+/im-client/target/
+/im-api/target/
+
+
