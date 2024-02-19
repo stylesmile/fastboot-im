@@ -18,10 +18,16 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class PullPrivateMessageTask2 {
+    private static int corePoolSize = Runtime.getRuntime().availableProcessors();
+    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 4, 50L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(2000));
     private static ExecutorService EXECUTOR_SERVICE = ThreadPoolExecutorFactory.getThreadPoolExecutor();
     @AutoWired
     IMServerGroup imServerGroup;
@@ -31,7 +37,8 @@ public class PullPrivateMessageTask2 {
     private Jedis jedis;
 
     public void run(String... args) {
-        EXECUTOR_SERVICE.execute(new Runnable() {
+        executor.execute(new Runnable() {
+//        EXECUTOR_SERVICE.execute(new Runnable() {
             @SneakyThrows
             @Override
             public void run() {
@@ -41,7 +48,7 @@ public class PullPrivateMessageTask2 {
 //                    }
                 } catch (Exception e) {
                     log.error("任务调度异常", e);
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 if (!EXECUTOR_SERVICE.isShutdown()) {
                     Thread.sleep(100);
