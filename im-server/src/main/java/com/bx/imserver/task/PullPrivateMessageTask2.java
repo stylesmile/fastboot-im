@@ -64,11 +64,7 @@ public class PullPrivateMessageTask2 {
         String key = String.join(":", IMRedisKey.IM_MESSAGE_PRIVATE_QUEUE, IMServerGroup.serverId + "");
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
 //        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
-        byte[] value = jedis.rpop(GsonByteUtils.toByteArray(key));
-        if (value == null) {
-            return;
-        }
-        JSONObject jsonObject = GsonByteUtils.fromByteArray(value, JSONObject.class);
+        JSONObject jsonObject = redisTemplate.rpopSerializeData(key,JSONObject.class);
 //        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
         while (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
