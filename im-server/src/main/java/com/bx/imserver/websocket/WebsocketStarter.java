@@ -1,5 +1,6 @@
 package com.bx.imserver.websocket;
 
+import io.github.stylesmile.annotation.Service;
 import org.tio.server.ServerTioConfig;
 import org.tio.utils.jfinal.P;
 import org.tio.websocket.server.WsServerStarter;
@@ -35,7 +36,6 @@ public class WebsocketStarter {
 
         //设置心跳超时时间
         serverTioConfig.setHeartbeatTimeout(WsConstant.HEARTBEAT_TIMEOUT);
-
 //        if (P.getInt("ws.use.ssl", 1) == 1) {
             //如果你希望通过wss来访问，就加上下面的代码吧，不过首先你得有SSL证书（证书必须和域名相匹配，否则可能访问不了ssl）
 //			String keyStoreFile = "classpath:config/ssl/keystore.jks";

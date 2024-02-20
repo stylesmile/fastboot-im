@@ -1,5 +1,8 @@
 package com.bx.imserver.websocket;
 
+import com.google.gson.JsonObject;
+import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.tool.JsonGsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tio.core.ChannelContext;
@@ -11,13 +14,13 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
  * @author tanyaowu
  * 2017年6月28日 下午5:32:38
  */
+@Service
 public class ShowcaseWsMsgHandler implements IWsMsgHandler {
 
     private static Logger log = LoggerFactory.getLogger(ShowcaseWsMsgHandler.class);
@@ -33,12 +36,12 @@ public class ShowcaseWsMsgHandler implements IWsMsgHandler {
      */
     @Override
     public HttpResponse handshake(HttpRequest request, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
-        String clientip = request.getClientIp();
-        String myname = request.getParam("name");
-
-        Tio.bindUser(channelContext, myname);
-//		channelContext.setUserid(myname);
-        log.info("收到来自{}的ws握手包\r\n{}", clientip, request.toString());
+//        String clientip = request.getClientIp();
+//        String myname = request.getParam("name");
+//
+//        Tio.bindUser(channelContext, myname);
+////		channelContext.setUserid(myname);
+//        log.info("收到来自{}的ws握手包\r\n{}", clientip, request.toString());
         return httpResponse;
     }
 
@@ -51,15 +54,15 @@ public class ShowcaseWsMsgHandler implements IWsMsgHandler {
      */
     @Override
     public void onAfterHandshaked(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
-        //绑定到群组，后面会有群发
-        Tio.bindGroup(channelContext, WsConstant.GROUP_ID);
-        int count = Tio.getAll(channelContext.tioConfig).getObj().size();
-
-        String msg = "{name:'admin',message:'" + channelContext.userid + " 进来了，共【" + count + "】人在线" + "'}";
-        //用tio-websocket，服务器发送到客户端的Packet都是WsResponse
-        WsResponse wsResponse = WsResponse.fromText(msg, StandardCharsets.UTF_8.toString());
-        //群发
-        Tio.sendToGroup(channelContext.tioConfig, WsConstant.GROUP_ID, wsResponse);
+//        //绑定到群组，后面会有群发
+//        Tio.bindGroup(channelContext, WsConstant.GROUP_ID);
+//        int count = Tio.getAll(channelContext.tioConfig).getObj().size();
+//
+//        String msg = "{name:'admin',message:'" + channelContext.userid + " 进来了，共【" + count + "】人在线" + "'}";
+//        //用tio-websocket，服务器发送到客户端的Packet都是WsResponse
+//        WsResponse wsResponse = WsResponse.fromText(msg, StandardCharsets.UTF_8.toString());
+//        //群发
+//        Tio.sendToGroup(channelContext.tioConfig, WsConstant.GROUP_ID, wsResponse);
     }
 
     /**
@@ -84,6 +87,15 @@ public class ShowcaseWsMsgHandler implements IWsMsgHandler {
      */
     @Override
     public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) throws Exception {
+        JsonObject jsonObject = JsonGsonUtil.GsonToBean(text, JsonObject.class);
+        Integer cmd = jsonObject.get("cmd").getAsInt();
+        switch (cmd) {
+            case 0:
+                LoginProcessor
+            case 1:
+        }
+
+        Integer cmd2 = jsonObject.get("cmd").getAsInt();
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.get();
         HttpRequest httpRequest = wsSessionContext.getHandshakeRequest();//获取websocket握手包
         if (log.isDebugEnabled()) {

@@ -28,7 +28,7 @@ public class WsConstant {
     /**
      * 监听端口
      */
-    public static final int SERVER_PORT = 9326;
+    public static final int SERVER_PORT = 8877;
 
     /**
      * 心跳超时时间，单位：毫秒
