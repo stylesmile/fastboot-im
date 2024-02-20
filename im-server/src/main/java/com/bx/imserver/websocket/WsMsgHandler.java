@@ -2,8 +2,7 @@ package com.bx.imserver.websocket;
 
 import com.bx.imserver.websocket.service.LoginService;
 import com.google.gson.JsonObject;
-import io.github.stylesmile.annotation.AutoWired;
-import io.github.stylesmile.annotation.Service;
+import io.github.stylesmile.tool.FastbootUtil;
 import io.github.stylesmile.tool.JsonGsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,23 +15,19 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
-import javax.annotation.Resource;
 import java.util.Objects;
 
 /**
  * @author tanyaowu
  * 2017年6月28日 下午5:32:38
  */
-@Service
-public class ShowcaseWsMsgHandler implements IWsMsgHandler {
+public class WsMsgHandler implements IWsMsgHandler {
 
-    @AutoWired
-    LoginService loginService;
-    public static Logger log = LoggerFactory.getLogger(ShowcaseWsMsgHandler.class);
+    public static Logger log = LoggerFactory.getLogger(WsMsgHandler.class);
 
-    public static final ShowcaseWsMsgHandler me = new ShowcaseWsMsgHandler();
+    public static final WsMsgHandler me = new WsMsgHandler();
 
-    public ShowcaseWsMsgHandler() {
+    public WsMsgHandler() {
 
     }
 
@@ -94,12 +89,18 @@ public class ShowcaseWsMsgHandler implements IWsMsgHandler {
     public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) throws Exception {
         JsonObject jsonObject = JsonGsonUtil.GsonToBean(text, JsonObject.class);
         Integer cmd = jsonObject.get("cmd").getAsInt();
+        if (null == cmd) {
+            return null;
+        }
+        String token = jsonObject.get("data").getAsJsonObject().get("accessToken").getAsString();
+
         switch (cmd) {
             case 0:
-                loginService.process(jsonObject.get("accessToken").getAsString(), channelContext);
+                LoginService loginService = FastbootUtil.getBean(LoginService.class);
+                loginService.process(token, channelContext);
                 break;
             case 1:
-                loginService.process(jsonObject.get("accessToken").getAsString(), channelContext);
+                FastbootUtil.getBean(LoginService.class).process(jsonObject.get("accessToken").getAsString(), channelContext);
             default:
                 break;
         }
