@@ -10,7 +10,7 @@ export default defineConfig({
 			'/api': {
 				rewrite: path => path.replace(/^\/api/, ''),
 				logLevel: 'debug',
-				target: 'http://localhost:8888',
+				target: 'http://localhost:7070',
 				changeOrigin: true
 			},
 			

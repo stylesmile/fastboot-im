@@ -3,6 +3,7 @@
 	import http from './common/request';
 	import * as enums from './common/enums';
 	import * as wsApi from './common/wssocket';
+  export const defaultWsUrl = process.env.WS_URL || 'ws://127.0.0.1:8877/im'
 
 	export default {
 		data() {
@@ -26,7 +27,7 @@
 			initWebSocket() {
 				let loginInfo = uni.getStorageSync("loginInfo")
 				wsApi.init();
-				wsApi.connect(process.env.WS_URL, loginInfo.accessToken);
+				wsApi.connect(defaultWsUrl, loginInfo.accessToken);
 				wsApi.onConnect(() => {
 					// 加载离线消息
 					this.loadPrivateMessage(store.state.chatStore.privateMsgMaxId);
@@ -57,7 +58,7 @@
 							icon: 'none',
 						})
 						let loginInfo = uni.getStorageSync("loginInfo")
-						wsApi.reconnect(process.env.WS_URL, loginInfo.accessToken);
+						wsApi.reconnect(defaultWsUrl, loginInfo.accessToken);
 					}
 				})
 			},

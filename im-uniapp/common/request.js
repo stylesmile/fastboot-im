@@ -2,7 +2,7 @@
 let requestList = [];
 // 是否正在刷新中
 let isRefreshToken = false;
-export const DEFAULT_BASE_URL = process.env.BASE_URL != undefined ? process.env.BASE_URL : 'http://127.0.0.1:7070/api'
+export const DEFAULT_BASE_URL = process.env.BASE_URL != undefined ? process.env.BASE_URL : '/api'
 
 const request = (options) => {
 	const header = options.header || {};
