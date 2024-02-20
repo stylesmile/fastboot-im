@@ -14,11 +14,15 @@ import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.tool.GsonByteUtils;
+import io.github.stylesmile.tool.JsonGsonUtil;
+import io.github.stylesmile.websocket.WebsocketUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.tio.core.ChannelContext;
+import org.tio.websocket.common.WsResponse;
 import redis.clients.jedis.Jedis;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
@@ -36,13 +40,15 @@ public class GroupMessageProcessor {
         log.info("接收到群消息，发送者:{},接收用户数量:{}，内容:{}", senderId, receivers.size(), recvInfo.getData());
         for (IMUserInfo receiver : receivers) {
             try {
-                ChannelHandlerContext channelCtx = UserChannelCtxMap.getChannelCtx(receiver.getId(), receiver.getTerminal());
+                ChannelContext channelCtx = UserChannelCtxMap.getChannelCtx2(receiver.getId(), receiver.getTerminal());
                 if (channelCtx != null) {
                     // 推送消息到用户
                     IMSendInfo sendInfo = new IMSendInfo();
                     sendInfo.setCmd(IMCmdType.GROUP_MESSAGE.code());
                     sendInfo.setData(recvInfo.getData());
-                    channelCtx.channel().writeAndFlush(sendInfo);
+                    WsResponse wsResponse = WsResponse.fromText(JsonGsonUtil.BeanToJson(sendInfo), StandardCharsets.UTF_8.toString());
+                    WebsocketUtil.sendToUser(channelCtx.tioConfig, receiver.getId().toString(), wsResponse);
+//                channelCtx.channel().writeAndFlush(sendInfo);
                     // 消息发送成功确认
                     sendResult(recvInfo, receiver, IMSendCode.SUCCESS);
 
