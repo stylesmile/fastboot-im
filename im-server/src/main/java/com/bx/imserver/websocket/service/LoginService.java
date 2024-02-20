@@ -46,7 +46,8 @@ public class LoginService {
         Long userId = userSession.get("userId").getAsLong();
         Integer terminal = userSession.get("terminal").getAsInt();
         log.info("用户登录，userId:{}", userId);
-        ChannelHandlerContext context = UserChannelCtxMap.getChannelCtx(userId, terminal);
+        UserChannelCtxMap.addChannelCtx2(userId, terminal,channelContext);
+//        ChannelHandlerContext context = UserChannelCtxMap.getChannelCtx(userId, terminal);
 //        if (channelContext != null && !ctx.channel().id().equals(context.channel().id())) {
 //            // 不允许多地登录,强制下线
 //            IMSendInfo<Object> sendInfo = new IMSendInfo<>();

@@ -5,7 +5,7 @@ import com.bx.imcommon.contant.IMRedisKey;
 import com.bx.imcommon.model.IMRecvInfo;
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import com.bx.imserver.netty.IMServerGroup;
-import com.bx.imserver.netty.processor.PrivateMessageService;
+import com.bx.imserver.websocket.service.PrivateMessageService;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
