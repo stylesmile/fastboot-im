@@ -2,9 +2,9 @@ package com.bx.imserver.websocket;
 
 import com.bx.imserver.websocket.service.LoginService;
 import com.google.gson.JsonObject;
+import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.tool.JsonGsonUtil;
-import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tio.core.ChannelContext;
@@ -26,13 +26,13 @@ import java.util.Objects;
 @Service
 public class ShowcaseWsMsgHandler implements IWsMsgHandler {
 
-    @Resource
+    @AutoWired
     LoginService loginService;
-    private static Logger log = LoggerFactory.getLogger(ShowcaseWsMsgHandler.class);
+    public static Logger log = LoggerFactory.getLogger(ShowcaseWsMsgHandler.class);
 
     public static final ShowcaseWsMsgHandler me = new ShowcaseWsMsgHandler();
 
-    private ShowcaseWsMsgHandler() {
+    public ShowcaseWsMsgHandler() {
 
     }
 
@@ -96,11 +96,14 @@ public class ShowcaseWsMsgHandler implements IWsMsgHandler {
         Integer cmd = jsonObject.get("cmd").getAsInt();
         switch (cmd) {
             case 0:
-                loginService.process();
+                loginService.process(jsonObject.get("accessToken").getAsString(), channelContext);
+                break;
             case 1:
+                loginService.process(jsonObject.get("accessToken").getAsString(), channelContext);
+            default:
+                break;
         }
 
-        Integer cmd2 = jsonObject.get("cmd").getAsInt();
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.get();
         HttpRequest httpRequest = wsSessionContext.getHandshakeRequest();//获取websocket握手包
         if (log.isDebugEnabled()) {
