@@ -1,8 +1,10 @@
 package com.bx.imserver.websocket;
 
+import com.bx.imserver.websocket.service.LoginService;
 import com.google.gson.JsonObject;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.tool.JsonGsonUtil;
+import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tio.core.ChannelContext;
@@ -14,6 +16,7 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
+import javax.annotation.Resource;
 import java.util.Objects;
 
 /**
@@ -23,6 +26,8 @@ import java.util.Objects;
 @Service
 public class ShowcaseWsMsgHandler implements IWsMsgHandler {
 
+    @Resource
+    LoginService loginService;
     private static Logger log = LoggerFactory.getLogger(ShowcaseWsMsgHandler.class);
 
     public static final ShowcaseWsMsgHandler me = new ShowcaseWsMsgHandler();
@@ -91,7 +96,7 @@ public class ShowcaseWsMsgHandler implements IWsMsgHandler {
         Integer cmd = jsonObject.get("cmd").getAsInt();
         switch (cmd) {
             case 0:
-                LoginProcessor
+                loginService.process();
             case 1:
         }
 

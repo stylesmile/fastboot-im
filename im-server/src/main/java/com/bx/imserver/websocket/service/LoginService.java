@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 @Slf4j
 @Service
-public class LoginProcessor {
+public class LoginService {
 
     @AutoWired
     private JedisTemplate redisTemplate;
