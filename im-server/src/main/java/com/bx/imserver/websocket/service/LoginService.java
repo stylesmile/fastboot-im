@@ -7,11 +7,14 @@ import com.bx.imcommon.enums.IMCmdType;
 import com.bx.imcommon.model.IMLoginInfo;
 import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imserver.netty.IMServerGroup;
+import com.bx.imserver.netty.UserChannelCtxMap;
 import com.google.gson.JsonObject;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.tool.JsonGsonUtil;
+import io.github.stylesmile.websocket.WebsocketUtil;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
@@ -27,14 +30,12 @@ public class LoginService {
     @AutoWired
     private JedisTemplate redisTemplate;
 
-    public synchronized void process(String token, ChannelContext channelContext) {
-        JsonObject userSession = redisTemplate.getSerializeData(
-                String.format(IMRedisKey.TOKEN_USER_SESSION, token),
-                JsonObject.class);
+    public synchronized void process(JsonObject userSession, ChannelContext channelContext) {
+
 //        if (!JwtUtil.checkSign(loginInfo.getAccessToken(), accessTokenSecret)) {
         if (userSession == null) {
             Tio.remove(channelContext, "receive close flag");
-            log.debug("用户token校验不通过，强制下线,token:{}", token);
+//            log.debug("用户token校验不通过，强制下线,token:{}", token);
         }
 //        String strInfo = JwtUtil.getInfo(loginInfo.getAccessToken());
 //        String strInfo = JwtUtil.getInfo(loginInfo.getAccessToken());
@@ -45,7 +46,7 @@ public class LoginService {
         Long userId = userSession.get("userId").getAsLong();
         Integer terminal = userSession.get("terminal").getAsInt();
         log.info("用户登录，userId:{}", userId);
-//        ChannelHandlerContext context = UserChannelCtxMap.getChannelCtx(userId, terminal);
+        ChannelHandlerContext context = UserChannelCtxMap.getChannelCtx(userId, terminal);
 //        if (channelContext != null && !ctx.channel().id().equals(context.channel().id())) {
 //            // 不允许多地登录,强制下线
 //            IMSendInfo<Object> sendInfo = new IMSendInfo<>();
@@ -75,7 +76,7 @@ public class LoginService {
         IMSendInfo<Object> sendInfo = new IMSendInfo<>();
         sendInfo.setCmd(IMCmdType.LOGIN.code());
         WsResponse wsResponse = WsResponse.fromText(JsonGsonUtil.BeanToJson(sendInfo), StandardCharsets.UTF_8.toString());
-        Tio.sendToUser(channelContext.tioConfig, userId.toString(), wsResponse);
+        WebsocketUtil.sendToUser(channelContext.tioConfig, userId.toString(), wsResponse);
     }
 
 
