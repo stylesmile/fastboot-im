@@ -1,6 +1,5 @@
 package com.bx.imserver.websocket;
 
-import io.github.stylesmile.annotation.Service;
 import org.tio.server.ServerTioConfig;
 import org.tio.utils.jfinal.P;
 import org.tio.websocket.server.WsServerStarter;
@@ -22,7 +21,7 @@ public class WebsocketStarter {
 //    @Value("ssl.pwd")
 //    String keyStorePwd;
 
-    public WebsocketStarter(int serverPort, ShowcaseWsMsgHandler wsMsgHandler) throws Exception {
+    public WebsocketStarter(int serverPort, WsMsgHandler wsMsgHandler) throws Exception {
         wsServerStarter = new WsServerStarter(serverPort, wsMsgHandler);
 
         serverTioConfig = wsServerStarter.getServerTioConfig();
@@ -52,7 +51,7 @@ public class WebsocketStarter {
      * @throws Exception e
      */
     public static void start() throws Exception {
-        WebsocketStarter appStarter = new WebsocketStarter(WsConstant.SERVER_PORT, ShowcaseWsMsgHandler.me);
+        WebsocketStarter appStarter = new WebsocketStarter(WsConstant.SERVER_PORT, WsMsgHandler.me);
         appStarter.wsServerStarter.start();
     }
 
