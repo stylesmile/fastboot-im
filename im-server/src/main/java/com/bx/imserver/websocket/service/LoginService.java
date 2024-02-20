@@ -23,12 +23,6 @@ public class LoginService {
     @AutoWired
     private JedisTemplate redisTemplate;
 
-    @Value("${jwt.accessToken.secret}")
-    private String accessTokenSecret;
-    @Value("websocket.port")
-
-    private String accessTokenSecret2;
-
     public synchronized void process(String token, ChannelContext channelContext) {
         JsonObject userSession = redisTemplate.getSerializeData(
                 String.format(IMRedisKey.TOKEN_USER_SESSION, token),
