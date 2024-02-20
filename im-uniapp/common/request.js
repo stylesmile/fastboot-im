@@ -2,6 +2,7 @@
 let requestList = [];
 // 是否正在刷新中
 let isRefreshToken = false;
+export const DEFAULT_BASE_URL = process.env.BASE_URL != undefined ? process.env.BASE_URL : 'http://127.0.0.1:7070/api'
 
 const request = (options) => {
 	const header = options.header || {};
@@ -11,7 +12,7 @@ const request = (options) => {
 	}
 	return new Promise(function(resolve, reject) {
 		uni.request({
-			url: process.env.BASE_URL + options.url,
+			url: DEFAULT_BASE_URL + options.url,
 			method: options.method || 'GET',
 			header: header,
 			data: options.data || {},
