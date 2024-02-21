@@ -78,16 +78,12 @@ public class PullMessageTask2 {
     }
 
 
-    public void pullMessagePrivate() {
+    public synchronized void pullMessagePrivate() {
         // 从redis拉取未读消息
         String key = String.join(":", IMRedisKey.IM_MESSAGE_PRIVATE_QUEUE, IMServerGroup.serverId + "");
-//        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-//        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
         JSONObject jsonObject = redisTemplate.rpopSerializeData(key, JSONObject.class);
-//        JSONObject jsonObject = redisTemplate.rpop(key, JSONObject.class);
         while (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
-//            AbstractMessageProcessor processor = ProcessorFactory.createProcessor(IMCmdType.PRIVATE_MESSAGE);
             PrivateMessageService processor = FastbootUtil.getBean(PrivateMessageService.class);
             processor.process(recvInfo);
             // 下一条消息
@@ -99,7 +95,7 @@ public class PullMessageTask2 {
         }
     }
 
-    public void pullMessageGroup() {
+    public synchronized void pullMessageGroup() {
         // 从redis拉取未读消息
         String key = String.join(":", IMRedisKey.IM_MESSAGE_GROUP_QUEUE, IMServerGroup.serverId + "");
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
