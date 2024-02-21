@@ -16,7 +16,7 @@ public class DealWebsocketMessageService {
     @AutoWired
     private JedisTemplate redisTemplate;
 
-    public void deal( String text, ChannelContext channelContext) {
+    public void deal(String text, ChannelContext channelContext) {
         JsonObject jsonObject = JsonGsonUtil.GsonToBean(text, JsonObject.class);
         Integer cmd = jsonObject.get("cmd").getAsInt();
         if (null == cmd) {
