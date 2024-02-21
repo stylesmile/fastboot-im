@@ -37,8 +37,6 @@ public class PrivateMessageService {
         IMUserInfo receiver = recvInfo.getReceivers().get(0);
         log.info("接收到消息，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData());
         try {
-
-//            ChannelHandlerContext channelCtx = UserChannelCtxMap.getChannelCtx(receiver.getId(), receiver.getTerminal());
             ChannelContext channelCtx = UserChannelCtxMap.getChannelCtx2(receiver.getId(), receiver.getTerminal());
             if (channelCtx != null) {
                 // 推送消息到用户
