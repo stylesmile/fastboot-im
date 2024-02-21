@@ -5,6 +5,7 @@ import com.bx.imcommon.contant.IMRedisKey;
 import com.bx.imcommon.model.IMRecvInfo;
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import com.bx.imserver.netty.IMServerGroup;
+import com.bx.imserver.websocket.service.GroupMessageProcessor;
 import com.bx.imserver.websocket.service.PrivateMessageService;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class PullMessageTask2 {
     private static int corePoolSize = Runtime.getRuntime().availableProcessors();
-    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 4, 50L, TimeUnit.SECONDS,
+    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 2, 512L, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(2000));
     private static ExecutorService EXECUTOR_SERVICE = ThreadPoolExecutorFactory.getThreadPoolExecutor();
     @AutoWired
@@ -107,8 +108,8 @@ public class PullMessageTask2 {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
 //            AbstractMessageProcessor processor = ProcessorFactory.createProcessor(IMCmdType.GROUP_MESSAGE);
 //            processor.process(recvInfo);
-//            GroupMessageProcessor processor = FastbootUtil.getBean(GroupMessageProcessor.class);
-//            processor.process(recvInfo);
+            GroupMessageProcessor processor = FastbootUtil.getBean(GroupMessageProcessor.class);
+            processor.process(recvInfo);
             // 下一条消息
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
             jsonObject = redisTemplate.lpopSerializeData(key, JSONObject.class);

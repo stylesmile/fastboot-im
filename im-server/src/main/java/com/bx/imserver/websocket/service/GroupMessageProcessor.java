@@ -33,8 +33,7 @@ public class GroupMessageProcessor {
     @AutoWired
     private Jedis jedis;
 
-    public synchronized void process(JsonObject jsonObject, ChannelContext channelContext) {
-        IMRecvInfo recvInfo = new IMRecvInfo();
+    public synchronized void process(IMRecvInfo recvInfo) {
         Integer senderId = 0;
         List<IMUserInfo> receivers = recvInfo.getReceivers();
         log.info("接收到群消息，发送者:{},接收用户数量:{}，内容:{}", senderId, receivers.size(), recvInfo.getData());
