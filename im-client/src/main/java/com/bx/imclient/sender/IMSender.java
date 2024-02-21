@@ -115,11 +115,10 @@ public class IMSender {
         List<IMUserInfo> offLineUsers = new LinkedList<>();
         int idx = 0;
         for (Map.Entry<String, IMUserInfo> entry : sendMap.entrySet()) {
-            int i = idx++;
-            if (i >= serverIds.size()) {
-                break;
+            if (idx >= serverIds.size()) {
+                continue;
             }
-            Integer serverId = serverIds.get(i);
+            Integer serverId = serverIds.get(idx++);
 
             if (serverId != null) {
                 List<IMUserInfo> list = serverMap.computeIfAbsent(Integer.valueOf(serverId.toString()), o -> new LinkedList<>());
@@ -141,7 +140,8 @@ public class IMSender {
             // 推送至队列
             String key = String.join(":", IMRedisKey.IM_MESSAGE_GROUP_QUEUE, entry.getKey().toString());
 //            redisTemplate.opsForList().rightPush(key, recvInfo);
-            jedisTemplate.setSerializeData(key, recvInfo);
+            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(recvInfo));
+
 
         }
 
