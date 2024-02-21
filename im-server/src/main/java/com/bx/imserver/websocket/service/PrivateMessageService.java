@@ -33,7 +33,7 @@ public class PrivateMessageService {
 
     //    public void process(IMRecvInfo recvInfo) {
 //    public synchronized void process(JsonObject jsonObject, ChannelContext channelContext) {
-    public void process(IMRecvInfo recvInfo) {
+    public synchronized void process(IMRecvInfo recvInfo) {
         IMUserInfo sender = recvInfo.getSender();
         IMUserInfo receiver = recvInfo.getReceivers().get(0);
         log.info("接收到消息，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData());
