@@ -1,4 +1,4 @@
-package com.bx.imserver.websocket.service;
+package com.bx.imserver.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.bx.imcommon.contant.IMConstant;

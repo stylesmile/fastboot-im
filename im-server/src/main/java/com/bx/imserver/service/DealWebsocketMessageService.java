@@ -1,4 +1,4 @@
-package com.bx.imserver.websocket.service;
+package com.bx.imserver.service;
 
 import com.bx.imcommon.contant.IMRedisKey;
 import com.bx.imserver.netty.UserChannelCtxMap;
@@ -10,7 +10,6 @@ import io.github.stylesmile.tool.FastbootUtil;
 import io.github.stylesmile.tool.JsonGsonUtil;
 import io.github.stylesmile.websocket.WebsocketUtil;
 import org.tio.core.ChannelContext;
-import org.tio.websocket.common.WsRequest;
 
 @Service
 public class DealWebsocketMessageService {
