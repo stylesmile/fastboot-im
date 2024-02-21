@@ -72,7 +72,7 @@
 			},
 			loadGroupMembers(id) {
 				this.$http({
-					url: `/group/members/${id}`,
+					url: `/group/members?groupId=${id}`,
 					method: "GET"
 				}).then((members) => {
 					this.groupMembers = members.filter(m => !m.quit);

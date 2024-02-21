@@ -71,7 +71,7 @@ public class GroupController {
 
     @ApiOperation(value = "查询群聊成员", notes = "查询群聊成员")
 //    @GetMapping("/group/members/{groupId}")
-    @RequestMapping("/group/members/{groupId}")
+    @RequestMapping("/group/members")
     public Result<List<GroupMemberVO>> findGroupMembers(
 //            @NotNull(message = "群聊id不能为空") @PathVariable Long groupId) {
             @NotNull(message = "群聊id不能为空") Long groupId) {

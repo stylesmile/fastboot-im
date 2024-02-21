@@ -244,7 +244,7 @@
 			},
 			loadGroupMembers() {
 				this.$http({
-					url: `/group/members/${this.activeGroup.id}`,
+					url: `/group/members?groupId=${this.activeGroup.id}`,
 					method: "get"
 				}).then((members) => {
 					this.groupMembers = members;

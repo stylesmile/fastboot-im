@@ -80,7 +80,7 @@
 			},
 			loadGroupMembers() {
 				this.$http({
-					url: `/group/members/${this.group.id}`,
+					url: `/group/members?groupId=${this.group.id}`,
 					method: "get"
 				}).then((members) => {
 					this.groupMembers = members;

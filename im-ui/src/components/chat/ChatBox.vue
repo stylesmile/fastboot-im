@@ -589,7 +589,7 @@
 				});
 
 				this.$http({
-					url: `/group/members/${groupId}`,
+					url: `/group/members?groupId=${groupId}`,
 					method: 'get'
 				}).then((groupMembers) => {
 					this.groupMembers = groupMembers;

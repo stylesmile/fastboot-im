@@ -166,7 +166,7 @@
 			loadGroupMembers() {
 				console.log("loadGroupMembers")
 				this.$http({
-					url: `/group/members/${this.groupId}`,
+					url: `/group/members?groupId=${this.groupId}`,
 					method: "GET"
 				}).then((members) => {
 					this.groupMembers = members.filter(m => !m.quit);
