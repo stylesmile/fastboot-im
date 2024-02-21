@@ -13,7 +13,6 @@ import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.ioc.Value;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.tool.GsonByteUtils;
-import io.github.stylesmile.tool.JsonGsonUtil;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -31,7 +30,7 @@ public class IMSender {
     @Value("fast.name")
     private String appName;
     @AutoWired
-    private  MessageListenerMulticaster listenerMulticaster;
+    private MessageListenerMulticaster listenerMulticaster;
 
     public <T> void sendPrivateMessage(IMPrivateMessage<T> message) {
         List<IMSendResult> results = new LinkedList<>();
@@ -104,21 +103,26 @@ public class IMSender {
         }
 
         // 批量拉取
-        List<Object> serverIds = new ArrayList<>();
+        List<Integer> serverIds = new ArrayList<>();
         for (String s : sendMap.keySet()) {
-            Object o = jedisTemplate.getSerializeData(s, Object.class);
-            serverIds.add(o);
+            Integer o = jedisTemplate.getSerializeData(s, Integer.class);
+            if (o != null) {
+                serverIds.add(o);
+            }
         }
-//        List<Object> serverIds = redisTemplate.opsForValue().multiGet(sendMap.keySet());
-
         // 格式:map<服务器id,list<接收方>>
         Map<Integer, List<IMUserInfo>> serverMap = new HashMap<>();
         List<IMUserInfo> offLineUsers = new LinkedList<>();
         int idx = 0;
         for (Map.Entry<String, IMUserInfo> entry : sendMap.entrySet()) {
-            Integer serverId = (Integer) serverIds.get(idx++);
+            int i = idx++;
+            if (i >= serverIds.size()) {
+                break;
+            }
+            Integer serverId = serverIds.get(i);
+
             if (serverId != null) {
-                List<IMUserInfo> list = serverMap.computeIfAbsent(serverId, o -> new LinkedList<>());
+                List<IMUserInfo> list = serverMap.computeIfAbsent(Integer.valueOf(serverId.toString()), o -> new LinkedList<>());
                 list.add(entry.getValue());
             } else {
                 // 加入离线列表

@@ -198,7 +198,7 @@ public class GroupMessageService {
         int idx = 0;
         for (Long id : ids) {
             Object o = sendPos.get(idx);
-            Integer sendMaxId = Objects.isNull(o) ? -1 : (Integer) o;
+            Integer sendMaxId = Objects.isNull(o) ? -1 : Double.valueOf(o.toString()).intValue();
             vos.stream().filter(vo -> vo.getGroupId().equals(id)).forEach(vo -> {
                 if (vo.getId() <= sendMaxId) {
                     // 已读
