@@ -1,12 +1,7 @@
 package com.bx.imserver.websocket;
 
-import com.bx.imcommon.contant.IMRedisKey;
 import com.bx.imserver.websocket.service.DealWebsocketMessageService;
-import com.bx.imserver.websocket.service.HeartbeatService;
-import com.bx.imserver.websocket.service.LoginService;
-import com.google.gson.JsonObject;
 import io.github.stylesmile.tool.FastbootUtil;
-import io.github.stylesmile.tool.JsonGsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tio.core.ChannelContext;
@@ -14,14 +9,7 @@ import org.tio.core.Tio;
 import org.tio.http.common.HttpRequest;
 import org.tio.http.common.HttpResponse;
 import org.tio.websocket.common.WsRequest;
-import org.tio.websocket.common.WsResponse;
-import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
-
-import java.util.Objects;
-
-import static com.bx.imcommon.enums.IMCmdType.HEART_BEAT;
-import static com.bx.imcommon.enums.IMCmdType.LOGIN;
 
 /**
  * @author tanyaowu
@@ -94,7 +82,7 @@ public class WsMsgHandler implements IWsMsgHandler {
     @Override
     public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) throws Exception {
         DealWebsocketMessageService dealWebsocketMessageService = FastbootUtil.getBean(DealWebsocketMessageService.class);
-        dealWebsocketMessageService.deal(wsRequest,text,channelContext);
+        dealWebsocketMessageService.deal(text, channelContext);
 
 
 //        WsSessionContext wsSessionContext = (WsSessionContext) channelContext.get();
