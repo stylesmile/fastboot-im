@@ -63,15 +63,15 @@ public class PrivateMessageService {
     }
 
     private void sendResult(IMRecvInfo recvInfo, IMSendCode sendCode) {
-        if (recvInfo.getSendResult()) {
+//        if (recvInfo.getSendResult()) {
             IMSendResult<Object> result = new IMSendResult<>();
             result.setSender(recvInfo.getSender());
             result.setReceiver(recvInfo.getReceivers().get(0));
             result.setCode(sendCode.code());
             result.setData(recvInfo.getData());
             // 推送到结果队列
-            String key = StrUtil.join(":", IMRedisKey.IM_RESULT_PRIVATE_QUEUE, recvInfo.getServiceName());
-            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(recvInfo));
-        }
+            String key = StrUtil.join(":",IMRedisKey.IM_RESULT_PRIVATE_QUEUE,recvInfo.getServiceName());
+            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(result));
+//        }
     }
 }

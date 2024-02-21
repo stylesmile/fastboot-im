@@ -72,7 +72,7 @@ public class GroupMessageProcessor {
             // 推送到结果队列
             String key = StrUtil.join(":", IMRedisKey.IM_RESULT_GROUP_QUEUE, recvInfo.getServiceName());
 //            redisTemplate.opsForList().rightPush(key, result);
-            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(recvInfo));
+            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(result));
 
         }
     }
