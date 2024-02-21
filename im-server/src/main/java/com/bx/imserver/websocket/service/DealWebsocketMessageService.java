@@ -1,7 +1,6 @@
 package com.bx.imserver.websocket.service;
 
 import com.bx.imcommon.contant.IMRedisKey;
-import com.bx.imserver.netty.processor.PrivateMessageService;
 import com.google.gson.JsonObject;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
