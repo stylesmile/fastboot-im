@@ -24,24 +24,18 @@ public class GroupMemberService {
     GroupMemberMapper groupMemberMapper;
 
     @CacheEvict(key = "#member.getGroupId()")
-//    @Override
     public boolean save(GroupMember member) {
         return groupMemberMapper.insert(member) > 0;
     }
 
     @CacheEvict(key = "#groupId")
-//    @Override
     public boolean saveOrUpdateBatch(Long groupId, List<GroupMember> members) {
         for (GroupMember m : members) {
-            groupMemberMapper.updateById(m);
-
+            groupMemberMapper.insert(m);
         }
-//        return this.saveOrUpdateBatch(members);
         return true;
     }
 
-
-    //    @Override
     public GroupMember findByGroupAndUserId(Long groupId, Long userId) {
         QueryWrapper<GroupMember> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(GroupMember::getGroupId, groupId)
@@ -49,7 +43,6 @@ public class GroupMemberService {
         return groupMemberMapper.selectOne(wrapper);
     }
 
-    //    @Override
     public List<GroupMember> findByUserId(Long userId) {
         LambdaQueryWrapper<GroupMember> memberWrapper = Wrappers.lambdaQuery();
         memberWrapper.eq(GroupMember::getUserId, userId)
@@ -57,7 +50,6 @@ public class GroupMemberService {
         return groupMemberMapper.selectList(memberWrapper);
     }
 
-    //    @Override
     public List<GroupMember> findByGroupId(Long groupId) {
         LambdaQueryWrapper<GroupMember> memberWrapper = Wrappers.lambdaQuery();
         memberWrapper.eq(GroupMember::getGroupId, groupId);
@@ -66,7 +58,6 @@ public class GroupMemberService {
     }
 
     @Cacheable(key = "#groupId")
-//    @Override
     public List<Long> findUserIdsByGroupId(Long groupId) {
         LambdaQueryWrapper<GroupMember> memberWrapper = Wrappers.lambdaQuery();
         memberWrapper.eq(GroupMember::getGroupId, groupId)
@@ -77,7 +68,6 @@ public class GroupMemberService {
     }
 
     @CacheEvict(key = "#groupId")
-//    @Override
     public void removeByGroupId(Long groupId) {
         LambdaUpdateWrapper<GroupMember> wrapper = Wrappers.lambdaUpdate();
         wrapper.eq(GroupMember::getGroupId, groupId)
