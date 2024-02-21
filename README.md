@@ -8,7 +8,7 @@
 1. fastboot-IM是一个仿微信实现的网页版聊天软件，目前完全开源。
 1. 支持私聊、群聊、离线消息、发送语音、图片、文件、emoji表情等功能
 1. 支持视频聊天(基于webrtc实现,需要ssl证书)
-1. 后端采用springboot+netty实现，网页端使用vue，移动端使用uniapp
+1. 后端采用fastboot+netty实现，网页端使用vue，移动端使用uniapp
 1. 服务器支持集群化部署，每个im-server仅处理自身连接用户的消息
 
 
@@ -117,10 +117,10 @@ npm run serve
 内容使用了redis进行通信,所以要配置redis地址：
 
 ```
-spring:
-  redis:
-    host: 127.0.0.1
-    port: 6379
+redis.host=localhost
+redis.port=6379
+redis.db=11
+redis.password=123456
 ```
 
 直接把IMClient通过@Autowire导进来就可以发送消息了，IMClient 只有2个接口：
