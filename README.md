@@ -28,6 +28,7 @@
 
 https://gitee.com/stylesmile/fastboot
 https://github.com/stylesmile/fastboot
+https://gitee.com/bluexsx/box-im
 
 #### 项目结构
 | 模块        |     功能 |
