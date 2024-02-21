@@ -11,7 +11,6 @@ import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
 import io.github.stylesmile.tool.FastbootUtil;
-import io.github.stylesmile.tool.GsonByteUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
@@ -24,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class PullMessageTask2 {
+public class PullMessageTask {
     private static int corePoolSize = Runtime.getRuntime().availableProcessors();
     private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 2, 512L, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(2000));
@@ -100,15 +99,14 @@ public class PullMessageTask2 {
         String key = String.join(":", IMRedisKey.IM_MESSAGE_GROUP_QUEUE, IMServerGroup.serverId + "");
 //        JSONObject jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
         JSONObject jsonObject = redisTemplate.lpopSerializeData(key, JSONObject.class);
-        while (!Objects.isNull(jsonObject)) {
+//        while (!Objects.isNull(jsonObject)) {
+        if (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
-//            AbstractMessageProcessor processor = ProcessorFactory.createProcessor(IMCmdType.GROUP_MESSAGE);
-//            processor.process(recvInfo);
             GroupMessageProcessor processor = FastbootUtil.getBean(GroupMessageProcessor.class);
             processor.process(recvInfo);
             // 下一条消息
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            jsonObject = redisTemplate.lpopSerializeData(key, JSONObject.class);
+//            jsonObject = redisTemplate.lpopSerializeData(key, JSONObject.class);
         }
     }
 }
