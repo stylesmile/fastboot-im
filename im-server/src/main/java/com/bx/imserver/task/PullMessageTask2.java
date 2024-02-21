@@ -88,10 +88,10 @@ public class PullMessageTask2 {
             processor.process(recvInfo);
             // 下一条消息
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);
-            byte[] bytes = jedis.lpop(GsonByteUtils.toByteArray(key));
-            if (bytes != null && bytes.length > 0) {
-                jsonObject = GsonByteUtils.fromByteArray(bytes, JSONObject.class);
-            }
+//            byte[] bytes = jedis.lpop(GsonByteUtils.toByteArray(key));
+//            if (bytes != null && bytes.length > 0) {
+//                jsonObject = GsonByteUtils.fromByteArray(bytes, JSONObject.class);
+//            }
         }
     }
 

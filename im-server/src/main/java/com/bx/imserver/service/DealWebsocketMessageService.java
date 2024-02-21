@@ -1,7 +1,6 @@
 package com.bx.imserver.service;
 
 import com.bx.imcommon.contant.IMRedisKey;
-import com.bx.imserver.netty.UserChannelCtxMap;
 import com.google.gson.JsonObject;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;

@@ -1,4 +1,4 @@
-package com.bx.imserver.netty;
+package com.bx.imserver.service;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.tio.core.ChannelContext;

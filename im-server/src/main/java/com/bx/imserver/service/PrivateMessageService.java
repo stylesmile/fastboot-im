@@ -8,7 +8,6 @@ import com.bx.imcommon.model.IMRecvInfo;
 import com.bx.imcommon.model.IMSendInfo;
 import com.bx.imcommon.model.IMSendResult;
 import com.bx.imcommon.model.IMUserInfo;
-import com.bx.imserver.netty.UserChannelCtxMap;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
 import io.github.stylesmile.jedis.JedisTemplate;
@@ -38,6 +37,7 @@ public class PrivateMessageService {
         IMUserInfo receiver = recvInfo.getReceivers().get(0);
         log.info("接收到消息，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData());
         try {
+
 //            ChannelHandlerContext channelCtx = UserChannelCtxMap.getChannelCtx(receiver.getId(), receiver.getTerminal());
             ChannelContext channelCtx = UserChannelCtxMap.getChannelCtx2(receiver.getId(), receiver.getTerminal());
             if (channelCtx != null) {
@@ -45,8 +45,8 @@ public class PrivateMessageService {
                 IMSendInfo<Object> sendInfo = new IMSendInfo<>();
                 sendInfo.setCmd(IMCmdType.PRIVATE_MESSAGE.code());
                 sendInfo.setData(recvInfo.getData());
+                System.out.println(JsonGsonUtil.BeanToJson(sendInfo));
                 WsResponse wsResponse = WsResponse.fromText(JsonGsonUtil.BeanToJson(sendInfo), StandardCharsets.UTF_8.toString());
-
                 WebsocketUtil.sendToUser(channelCtx.tioConfig, receiver.getId().toString(), wsResponse);
 //                channelCtx.channel().writeAndFlush(sendInfo);
                 // 消息发送成功确认
@@ -54,12 +54,12 @@ public class PrivateMessageService {
             } else {
                 // 消息推送失败确认
                 sendResult(recvInfo, IMSendCode.NOT_FIND_CHANNEL);
-                log.error("未找到channel，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData());
+//                log.error("未找到channel，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData());
             }
         } catch (Exception e) {
             // 消息推送失败确认
             sendResult(recvInfo, IMSendCode.UNKONW_ERROR);
-            log.error("发送异常，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData(), e);
+//            log.error("发送异常，发送者:{},接收者:{}，内容:{}", sender.getId(), receiver.getId(), recvInfo.getData(), e);
         }
 
     }
