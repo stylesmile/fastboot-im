@@ -31,18 +31,10 @@ public class LoginService {
     private JedisTemplate redisTemplate;
 
     public synchronized void process(JsonObject userSession, ChannelContext channelContext) {
-
-//        if (!JwtUtil.checkSign(loginInfo.getAccessToken(), accessTokenSecret)) {
         if (userSession == null) {
-            Tio.remove(channelContext, "receive close flag");
-//            log.debug("用户token校验不通过，强制下线,token:{}", token);
+            //用户token校验不通过，强制下线
+            WebsocketUtil.remove(channelContext);
         }
-//        String strInfo = JwtUtil.getInfo(loginInfo.getAccessToken());
-//        String strInfo = JwtUtil.getInfo(loginInfo.getAccessToken());
-//        IMSessionInfo sessionInfo = JSON.parseObject(strInfo, IMSessionInfo.class);
-//        IMSessionInfo sessionInfo = new IMSessionInfo();
-//        Long userId = sessionInfo.getUserId();
-//        Integer terminal = sessionInfo.getTerminal();
         Long userId = userSession.get("userId").getAsLong();
         Integer terminal = userSession.get("terminal").getAsInt();
         log.info("用户登录，userId:{}", userId);
