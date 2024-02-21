@@ -5,7 +5,7 @@ import com.bx.imcommon.contant.IMRedisKey;
 import com.bx.imcommon.model.IMRecvInfo;
 import com.bx.imcommon.util.ThreadPoolExecutorFactory;
 import com.bx.imserver.netty.IMServerGroup;
-import com.bx.imserver.service.GroupMessageProcessor;
+import com.bx.imserver.service.GroupMessageService;
 import com.bx.imserver.service.PrivateMessageService;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
@@ -25,7 +25,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class PullMessageTask {
     private static int corePoolSize = Runtime.getRuntime().availableProcessors();
-    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 2, 512L, TimeUnit.SECONDS,
+    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize * 4, 512L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(2000));
+    private static ThreadPoolExecutor executor2 = new ThreadPoolExecutor(corePoolSize, corePoolSize * 4, 512L, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(2000));
     private static ExecutorService EXECUTOR_SERVICE = ThreadPoolExecutorFactory.getThreadPoolExecutor();
     @AutoWired
@@ -49,13 +51,13 @@ public class PullMessageTask {
                     log.error("任务调度异常", e);
                     //e.printStackTrace();
                 }
-                if (!EXECUTOR_SERVICE.isShutdown()) {
+                if (!executor.isShutdown()) {
                     Thread.sleep(100);
-                    EXECUTOR_SERVICE.execute(this);
+                    executor.execute(this);
                 }
             }
         });
-        executor.execute(new Runnable() {
+        executor2.execute(new Runnable() {
             //        EXECUTOR_SERVICE.execute(new Runnable() {
             @SneakyThrows
             @Override
@@ -68,9 +70,9 @@ public class PullMessageTask {
                     log.error("任务调度异常", e);
                     //e.printStackTrace();
                 }
-                if (!EXECUTOR_SERVICE.isShutdown()) {
+                if (!executor2.isShutdown()) {
                     Thread.sleep(100);
-                    EXECUTOR_SERVICE.execute(this);
+                    executor2.execute(this);
                 }
             }
         });
@@ -102,7 +104,7 @@ public class PullMessageTask {
 //        while (!Objects.isNull(jsonObject)) {
         if (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
-            GroupMessageProcessor processor = FastbootUtil.getBean(GroupMessageProcessor.class);
+            GroupMessageService processor = FastbootUtil.getBean(GroupMessageService.class);
             processor.process(recvInfo);
             // 下一条消息
 //            jsonObject = (JSONObject) redisTemplate.opsForList().leftPop(key);

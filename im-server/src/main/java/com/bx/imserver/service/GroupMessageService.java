@@ -24,7 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class GroupMessageProcessor {
+public class GroupMessageService {
     @AutoWired
     private JedisTemplate redisTemplate;
     @AutoWired
@@ -49,7 +49,7 @@ public class GroupMessageProcessor {
                     sendResult(recvInfo, receiver, IMSendCode.SUCCESS);
 
                 } else {
-                    // 消息发送成功确认
+                    // 不在线发送成功确认
                     sendResult(recvInfo, receiver, IMSendCode.NOT_FIND_CHANNEL);
                     log.error("未找到channel,发送者:{},接收id:{}，内容:{}", senderId, receiver.getId(), recvInfo.getData());
                 }
