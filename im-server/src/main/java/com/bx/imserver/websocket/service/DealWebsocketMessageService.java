@@ -1,6 +1,7 @@
 package com.bx.imserver.websocket.service;
 
 import com.bx.imcommon.contant.IMRedisKey;
+import com.bx.imserver.netty.UserChannelCtxMap;
 import com.google.gson.JsonObject;
 import io.github.stylesmile.annotation.AutoWired;
 import io.github.stylesmile.annotation.Service;
@@ -39,6 +40,9 @@ public class DealWebsocketMessageService {
             case 2:
                 // 下线
                 WebsocketUtil.remove(channelContext);
+                Long userId = userSession.get("userId").getAsLong();
+                Integer terminal = userSession.get("terminal").getAsInt();
+                UserChannelCtxMap.removeChannelCtx(userId, terminal);
             default:
                 break;
         }
