@@ -45,10 +45,12 @@ public class PrivateMessageService {
                 sendInfo.setData(recvInfo.getData());
                 System.out.println(JsonGsonUtil.BeanToJson(sendInfo));
                 WsResponse wsResponse = WsResponse.fromText(JsonGsonUtil.BeanToJson(sendInfo), StandardCharsets.UTF_8.toString());
-                WebsocketUtil.sendToUser(channelCtx.tioConfig, receiver.getId().toString(), wsResponse);
-//                channelCtx.channel().writeAndFlush(sendInfo);
-                // 消息发送成功确认
-                sendResult(recvInfo, IMSendCode.SUCCESS);
+                try {
+                    WebsocketUtil.sendToUser(channelCtx.tioConfig, receiver.getId().toString(), wsResponse);
+                } catch (Exception e) {
+
+                }
+                //sendResult(recvInfo, IMSendCode.SUCCESS);
             } else {
                 // 消息推送失败确认
                 sendResult(recvInfo, IMSendCode.NOT_FIND_CHANNEL);
@@ -64,14 +66,14 @@ public class PrivateMessageService {
 
     private void sendResult(IMRecvInfo recvInfo, IMSendCode sendCode) {
 //        if (recvInfo.getSendResult()) {
-            IMSendResult<Object> result = new IMSendResult<>();
-            result.setSender(recvInfo.getSender());
-            result.setReceiver(recvInfo.getReceivers().get(0));
-            result.setCode(sendCode.code());
-            result.setData(recvInfo.getData());
-            // 推送到结果队列
-            String key = StrUtil.join(":",IMRedisKey.IM_RESULT_PRIVATE_QUEUE,recvInfo.getServiceName());
-            jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(result));
+        IMSendResult<Object> result = new IMSendResult<>();
+        result.setSender(recvInfo.getSender());
+        result.setReceiver(recvInfo.getReceivers().get(0));
+        result.setCode(sendCode.code());
+        result.setData(recvInfo.getData());
+        // 推送到结果队列
+        String key = StrUtil.join(":", IMRedisKey.IM_RESULT_PRIVATE_QUEUE, recvInfo.getServiceName());
+        jedis.rpush(GsonByteUtils.toByteArray(key), GsonByteUtils.toByteArray(result));
 //        }
     }
 }

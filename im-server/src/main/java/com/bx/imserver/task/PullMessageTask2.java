@@ -82,7 +82,7 @@ public class PullMessageTask2 {
         // 从redis拉取未读消息
         String key = String.join(":", IMRedisKey.IM_MESSAGE_PRIVATE_QUEUE, IMServerGroup.serverId + "");
         JSONObject jsonObject = redisTemplate.rpopSerializeData(key, JSONObject.class);
-        while (!Objects.isNull(jsonObject)) {
+        if (!Objects.isNull(jsonObject)) {
             IMRecvInfo recvInfo = jsonObject.toJavaObject(IMRecvInfo.class);
             PrivateMessageService processor = FastbootUtil.getBean(PrivateMessageService.class);
             processor.process(recvInfo);
