@@ -28,21 +28,17 @@ public class DealWebsocketMessageService {
                 JsonObject.class);
         switch (cmd) {
             case 0:
+                // 登录
                 LoginService loginService = FastbootUtil.getBean(LoginService.class);
                 loginService.process(userSession, channelContext);
                 break;
             case 1:
+                // 心跳
                 HeartbeatService heartbeatService = FastbootUtil.getBean(HeartbeatService.class);
                 heartbeatService.process(userSession, channelContext);
             case 2:
                 // 下线
                 WebsocketUtil.remove(channelContext);
-//            case 3:
-//                PrivateMessageService privateMessageService = FastbootUtil.getBean(PrivateMessageService.class);
-//                privateMessageService.process(userSession, channelContext);
-//            case 4:
-//                GroupMessageProcessor groupMessageProcessor = FastbootUtil.getBean(GroupMessageProcessor.class);
-//                groupMessageProcessor.process(userSession, channelContext);
             default:
                 break;
         }
