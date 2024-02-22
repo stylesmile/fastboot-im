@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @CacheConfig(cacheNames = RedisKey.IM_CACHE_GROUP)
 @Service
 //public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
-public class GroupServiceImpl {
+public class GroupService {
     @AutoWired
     private UserService userService;
     @AutoWired

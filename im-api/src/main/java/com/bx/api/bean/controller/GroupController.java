@@ -1,6 +1,6 @@
 package com.bx.api.bean.controller;
 
-import com.bx.api.bean.service.GroupServiceImpl;
+import com.bx.api.bean.service.GroupService;
 import com.bx.api.common.result.Result;
 import com.bx.api.common.result.ResultUtils;
 import com.bx.api.domain.vo.GroupInviteVO;
@@ -21,7 +21,7 @@ import java.util.List;
 @Controller
 public class GroupController {
     @AutoWired
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
 
     @ApiOperation(value = "创建群聊", notes = "创建群聊")
 //    @PostMapping("/group/create")

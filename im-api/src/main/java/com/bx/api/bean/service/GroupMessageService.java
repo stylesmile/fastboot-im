@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 //public class GroupMessageServiceImpl extends ServiceImpl<GroupMessageMapper, GroupMessage> implements IGroupMessageService {
 public class GroupMessageService {
     @AutoWired
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
     @AutoWired
     private GroupMemberService groupMemberService;
     @AutoWired
