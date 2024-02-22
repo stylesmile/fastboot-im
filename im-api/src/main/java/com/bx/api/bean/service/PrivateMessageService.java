@@ -29,13 +29,11 @@ import org.apache.commons.lang3.time.DateUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PrivateMessageService {
-    //public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper, PrivateMessage> implements IPrivateMessageService {
     @AutoWired
     private FriendService friendService;
     @AutoWired
