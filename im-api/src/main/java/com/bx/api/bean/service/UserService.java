@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bx.api.common.enums.ResultCode;
 import com.bx.api.common.exception.GlobalException;
+import com.bx.api.common.result.Result;
+import com.bx.api.common.result.ResultUtils;
 import com.bx.api.common.util.BeanUtils;
 import com.bx.api.common.util.MD5Util;
 import com.bx.api.config.JwtProperties;
@@ -64,14 +66,15 @@ public class UserService {
     private SessionService sessionService;
 
     //@Override
-    public LoginVO login(LoginDTO dto, Request request) {
+    public Result<LoginVO> login(LoginDTO dto, Request request) {
         User user = this.findUserByUserName(dto.getUserName());
         if (null == user) {
-            throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
+//            throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
+            ResultUtils.error(ResultCode.PROGRAM_ERROR, "用户不存在");
         }
         if (!MD5Util.calculateMD5(dto.getPassword()).equals(user.getPassword())) {
 //            if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new GlobalException(ResultCode.PASSWOR_ERROR);
+            ResultUtils.error(ResultCode.PASSWOR_ERROR, "用户不存在");
         }
         // 生成token
 //        UserSession session = BeanUtils.copyProperties(user, UserSession.class);
@@ -100,7 +103,7 @@ public class UserService {
 //        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
         //返回token
         // 设置缓存，600秒
-        return vo;
+        return ResultUtils.success(vo);
     }
 
     //@Override
