@@ -25,27 +25,24 @@ public class LoginController {
 
     private UserService userService;
 
-    //    @PostMapping("/login")
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "用户注册", notes = "用户注册")
     public Result login(@Valid LoginDTO dto, Request request) {
         return userService.login(dto, request);
     }
 
 
-    //    @PutMapping("/refreshToken")
-    @RequestMapping("/refreshToken")
+    @RequestMapping(value = "/refreshToken", method = RequestMethod.PUT)
     @ApiOperation(value = "刷新token", notes = "用refreshtoken换取新的token")
-//    public Result refreshToken(@RequestHeader("refreshToken") String refreshToken) {
     public Result refreshToken(Request re) {
         String refreshToken = re.getHeaders().get("refreshToken");
-        LoginVO vo = userService.refreshToken(refreshToken,re);
+        LoginVO vo = userService.refreshToken(refreshToken, re);
         return ResultUtils.success(vo);
     }
 
 
     //    @PostMapping("/register")
-    @RequestMapping("/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ApiOperation(value = "用户注册", notes = "用户注册")
     public Result register(@Valid @RequestBody RegisterDTO dto) {
         userService.register(dto);
