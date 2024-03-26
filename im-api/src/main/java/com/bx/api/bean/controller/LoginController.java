@@ -26,8 +26,8 @@ public class LoginController {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ApiOperation(value = "用户注册", notes = "用户注册")
-    public Result login(@Valid LoginDTO dto, Request request) {
+    @ApiOperation(value = "用户登录", notes = "用户登录")
+    public Result<LoginVO> login(@Valid LoginDTO dto, Request request) {
         return userService.login(dto, request);
     }
 
